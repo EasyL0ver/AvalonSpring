@@ -4,7 +4,8 @@ public class Login {
     private final String Username;
     private final String Password;
 
-    public Login(String username, String password){
+    //todo better exception
+    public Login(String username, String password) throws Exception {
         Username = username;
         Password = password;
     }

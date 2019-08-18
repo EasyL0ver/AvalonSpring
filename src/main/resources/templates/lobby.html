@@ -3,16 +3,19 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Avalon: lobby</title>
+    <script src="/lobby.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
 WITAMY W LOBBY
 <script th:inline="javascript">
-    /*<![CDATA[*/
-
     var apk = /*[[${api_key}]]*/ 'default';
     console.log(apk);
 
-    /*]]>*/
+    connect(apk);
+
 </script>
 </body>
 </html>

@@ -1,18 +1,17 @@
 package authentication;
 
+import org.graalvm.compiler.lir.LIRInstruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class MyUserService implements UserService {
 
     private final UserFactory userFactory;
     private final AuthenticationService authenticationService;
-    private final LinkedList<User> activeUsers;
+    private final Map<UUID, User> activeUsers;
 
     @Autowired
     public MyUserService(
@@ -22,11 +21,18 @@ public class MyUserService implements UserService {
         this.userFactory = userFactory;
         this.authenticationService = authenticationService;
 
-        activeUsers = new LinkedList<>();
+        activeUsers = new HashMap<>();
     }
 
     @Override
-    public User Authorize(Login login) {
+    public User authorize(Login login) {
+
+        if(login.getPassword() == null || login.getPassword().isEmpty())
+            throw new SecurityException("login password is either null or empty");
+
+        if(login.getUsername() == null || login.getUsername().isEmpty())
+            throw new SecurityException("login username is either null or empty");
+
         User thisUser = null;
         try{
 
@@ -34,15 +40,23 @@ public class MyUserService implements UserService {
 
             thisUser = userFactory.Build(login);
 
+            activeUsers.put(thisUser.getUserApiKey(), thisUser);
+
         }catch (Exception e){
             //todo exception handling
+            throw e;
         }
 
         return thisUser;
     }
 
     @Override
-    public List<User> getActiveUsers() {
-        return Collections.unmodifiableList(activeUsers);
+    public User findUser(UUID userApiKey) {
+        return null;
+    }
+
+    @Override
+    public Map<UUID, User> getActiveUsers() {
+        return Collections.unmodifiableMap(activeUsers);
     }
 }
