@@ -10,4 +10,5 @@ public interface UserService {
     User findUser(UUID userApiKey);
 
     Map<UUID, User> getActiveUsers();
+
 }

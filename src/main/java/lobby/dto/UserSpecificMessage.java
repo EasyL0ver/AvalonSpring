@@ -1,4 +1,4 @@
-package lobby;
+package lobby.dto;
 
 import java.util.UUID;
 

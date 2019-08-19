@@ -52,7 +52,11 @@ public class MyUserService implements UserService {
 
     @Override
     public User findUser(UUID userApiKey) {
-        return null;
+
+        if(!activeUsers.containsKey(userApiKey))
+            return null;
+
+        return activeUsers.get(userApiKey);
     }
 
     @Override

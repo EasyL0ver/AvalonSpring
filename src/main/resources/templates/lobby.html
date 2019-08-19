@@ -9,7 +9,22 @@
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
-WITAMY W LOBBY
+WITAMY W LOBBY<br><br>
+<form action="/lobby/create_game" method="post">
+    <input type="text" name="gameRoomName">
+    <input type="hidden" name="userApiKey" th:value="${api_key}">
+    <input type="submit"/>
+</form><br><br>
+<table id="activeGames">
+    <thead>
+    <tr>
+        <th>Active Games</th>
+    </tr>
+    </thead>
+    <tbody id="greetings">
+
+    </tbody>
+</table>
 <script th:inline="javascript">
     var apk = /*[[${api_key}]]*/ 'default';
     console.log(apk);

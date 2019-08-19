@@ -16,4 +16,9 @@ public class BasicUser implements User {
         this.apiKey = UUID.randomUUID();
         this.userName = credentials.getUsername();
     }
+
+    @Override
+    public String getUserName() {
+        return userName;
+    }
 }

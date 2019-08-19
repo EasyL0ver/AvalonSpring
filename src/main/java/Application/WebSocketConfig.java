@@ -1,4 +1,4 @@
-package socketTest;
+package Application;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
