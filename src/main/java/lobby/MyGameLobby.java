@@ -1,22 +1,20 @@
 package lobby;
 
 import authentication.User;
-import common.EventHandler;
-import jdk.jfr.Event;
+import common.Event;
 import lobby.dto.GameAddedLobbyInfo;
-import lobby.dto.JoinGameLobbyMessage;
+import lobby.gameroom.GameRoom;
+import lobby.gameroom.MyGameRoom;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 @Component
 public class MyGameLobby implements GameLobby {
     private final List<GameRoom> gameRooms;
-
-    private EventHandler<GameAddedLobbyInfo> onGameAddedLobbyHandler;
+    private final Event<GameAddedLobbyInfo> gameAddedEvent = new Event<>();
 
     public MyGameLobby() {
         this.gameRooms = new ArrayList<>();
@@ -38,9 +36,11 @@ public class MyGameLobby implements GameLobby {
         return gameRoom;
     }
 
-    public void setOnGameAddedLobbyHandler(EventHandler<GameAddedLobbyInfo> onGameAddedLobbyHandler) {
-        this.onGameAddedLobbyHandler = onGameAddedLobbyHandler;
+    @Override
+    public Event<GameAddedLobbyInfo> getGameAddedEvent() {
+        return gameAddedEvent;
     }
+
 
     private void PropagateRoomAddedInfo(GameRoom roomAdded){
         GameAddedLobbyInfo params = new GameAddedLobbyInfo();
@@ -49,8 +49,6 @@ public class MyGameLobby implements GameLobby {
         params.setPlayerCount(1);
         params.setHostName(roomAdded.getHostName());
 
-
-        if(onGameAddedLobbyHandler != null)
-            onGameAddedLobbyHandler.Handle(params);
+        gameAddedEvent.Invoke(params);
     }
 }

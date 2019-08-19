@@ -1,4 +1,4 @@
-package lobby;
+package lobby.gameroom;
 
 import authentication.User;
 

@@ -1,6 +1,7 @@
-package lobby;
+package lobby.gameroom;
 
 import authentication.User;
+import lobby.gameroom.GameRoom;
 
 import java.util.ArrayList;
 import java.util.List;

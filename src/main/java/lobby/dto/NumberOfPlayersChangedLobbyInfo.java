@@ -1,4 +1,4 @@
-package lobby;
+package lobby.dto;
 
 public class NumberOfPlayersChangedLobbyInfo {
 }

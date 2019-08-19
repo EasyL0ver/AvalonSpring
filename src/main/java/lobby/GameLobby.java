@@ -1,8 +1,9 @@
 package lobby;
 
 import authentication.User;
-import common.EventHandler;
+import common.Event;
 import lobby.dto.GameAddedLobbyInfo;
+import lobby.gameroom.GameRoom;
 
 import java.util.List;
 
@@ -11,6 +12,5 @@ public interface GameLobby {
 
     GameRoom createGameRoom(User userCreatingGame, String gameRoomName);
 
-    void setOnGameAddedLobbyHandler(EventHandler<GameAddedLobbyInfo> onGameAddedLobbyHandler);
-
+    Event<GameAddedLobbyInfo> getGameAddedEvent();
 }

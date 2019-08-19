@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class LobbyInformationController implements EventHandler<GameAddedLobbyInfo> {
+public class LobbyInformationController{
 
     private SimpMessagingTemplate simpMessagingTemplate;
     private GameLobby gameLobby;
@@ -18,13 +18,12 @@ public class LobbyInformationController implements EventHandler<GameAddedLobbyIn
         this.gameLobby = gameLobby;
         this.simpMessagingTemplate = simpMessagingTemplate;
 
-        this.gameLobby.setOnGameAddedLobbyHandler(this);
-
-    }
-
-    @Override
-    public void Handle(GameAddedLobbyInfo params) {
-        simpMessagingTemplate.convertAndSend("/topic/lobby/added", params);
+        gameLobby.getGameAddedEvent().AttachHandler(new EventHandler<GameAddedLobbyInfo>() {
+            @Override
+            public void Handle(GameAddedLobbyInfo params) {
+                simpMessagingTemplate.convertAndSend("/topic/lobby/added", params);
+            }
+        });
     }
 
 

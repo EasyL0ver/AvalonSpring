@@ -2,12 +2,11 @@ package lobby;
 
 import authentication.User;
 import authentication.UserService;
-import common.EventHandler;
 import common.UserSpecificMessageController;
 import lobby.dto.CreateGameLobbyMessage;
-import lobby.dto.GameAddedLobbyInfo;
 import lobby.dto.JoinGameLobbyMessage;
 import lobby.dto.UserSpecificMessage;
+import lobby.gameroom.GameRoom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,6 +69,4 @@ public class LobbyActionController extends UserSpecificMessageController {
 
         return user;
     }
-
-
 }
