@@ -2,15 +2,20 @@ package lobby;
 
 import authentication.User;
 import common.Event;
-import lobby.dto.GameAddedLobbyInfo;
 import lobby.gameroom.GameRoom;
 
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public interface GameLobby {
-    List<GameRoom> getLobbyGames();
+    Map<UUID, GameRoom> getLobbyGames();
 
     GameRoom createGameRoom(User userCreatingGame, String gameRoomName);
 
-    Event<GameAddedLobbyInfo> getGameAddedEvent();
+    void startGame(GameRoom room);
+    void abortGame(GameRoom room);
+
+    Event<GameRoom> getGameAddedEvent();
+    Event<GameRoom> getGameStartedEvent();
+    Event<GameRoom> getGameAbortedEvent();
 }

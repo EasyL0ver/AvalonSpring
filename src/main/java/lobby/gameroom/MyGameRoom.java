@@ -29,6 +29,12 @@ public class MyGameRoom implements GameRoom {
     }
 
     @Override
+    public void leave(User user) {
+        gameUsers.remove(user);
+        //todo notifictaion
+    }
+
+    @Override
     public UUID getGameRoomUUID() {
         return gameUUID;
     }
@@ -41,9 +47,6 @@ public class MyGameRoom implements GameRoom {
     public String getGameName() {
         return gameName;
     }
-
     @Override
-    public String getHostName() {
-        return gameHost.getUserName();
-    }
+    public User getHost() { return gameHost; }
 }

@@ -7,11 +7,13 @@ import java.util.UUID;
 
 public interface GameRoom {
     void join(User user);
+    void leave(User user);
 
     UUID getGameRoomUUID();
 
     String getGameName();
-    String getHostName();
+
+    User getHost();
 
     List<User> getUsersInGame();
 }

@@ -12,6 +12,9 @@ function connect(api_key) {
         stompClient.subscribe('/topic/lobby/added', function (addedInfo) {
             onGameAdded(addedInfo)
         });
+        stompClient.subscribe('/topic/lobby/removed', function (uuid) {
+            onGameRemoved(uuid)
+        });
     });
 }
 
@@ -19,6 +22,13 @@ function showGreeting(message) {
     lobbyGames.append(message);
 
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
+}
+
+function onGameRemoved(removedUUID) {
+    console.log("game removed");
+    console.log(removedUUID);
+
+    $("#greetings").append("<tr><td>" + removedUUID + "</td></tr>");
 }
 
 function onGameAdded(addedParams) {

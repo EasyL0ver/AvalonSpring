@@ -42,6 +42,8 @@ public class LobbyActionController extends UserSpecificMessageController {
 
         model.addAttribute("host_name", user.getUserName());
         model.addAttribute("room_name", gameRoom.getGameName());
+        model.addAttribute("room_uuid", gameRoom.getGameRoomUUID());
+        model.addAttribute("api_key", user.getUserApiKey());
 
         return "game_room";
     }

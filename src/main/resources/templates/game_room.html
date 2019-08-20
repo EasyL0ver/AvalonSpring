@@ -7,6 +7,16 @@
 <body>
     Witam cb w game room<br>
     <p th:text="'Hosted by ' + ${host_name} + '!'" />
-    <p th:text="'Room name: ' + ${room_name} + '!'" />
+    <p th:text="'Room name: ' + ${room_name} + '!'" /><br>
+    <form action="/lobby/room/start_game" method="post">
+        <input type="hidden" name="userApiKey" th:value="${api_key}">
+        <input type="hidden" name="gameUUID" th:value="${room_uuid}">
+        <input value="start" type="submit"/>
+    </form><br>
+    <form action="/lobby/room/abort" method="post">
+        <input type="hidden" name="userApiKey" th:value="${api_key}">
+        <input type="hidden" name="gameUUID" th:value="${room_uuid}">
+        <input value="abort" type="submit"/>
+    </form><br>
 </body>
 </html>
