@@ -36,7 +36,9 @@ public class LoginController {
         }
         catch(Exception e) {
             //todo better exception handling
-            throw e;
+            //todo add thymeleaf login failed reason
+            model.addAttribute("failed_reason", e.getMessage());
+            return "login";
             //response.sendRedirect("/");
         }
 

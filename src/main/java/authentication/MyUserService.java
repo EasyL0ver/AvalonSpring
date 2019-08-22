@@ -1,6 +1,5 @@
 package authentication;
 
-import org.graalvm.compiler.lir.LIRInstruction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,7 @@ public class MyUserService implements UserService {
     }
 
     @Override
-    public User authorize(Login login) {
+    public User authorize(Login login) throws Exception {
 
         if(login.getPassword() == null || login.getPassword().isEmpty())
             throw new SecurityException("login password is either null or empty");

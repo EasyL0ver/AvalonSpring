@@ -12,4 +12,12 @@ public class Account {
     private String username;
     @Column(name = "password")
     private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

@@ -26,6 +26,7 @@ public class LobbyInformationController{
                 params.setRoomName(addedRoom.getGameName());
                 params.setPlayerCount(1);
                 params.setHostName(addedRoom.getHost().getUserName());
+                params.setGameUUID(addedRoom.getGameRoomUUID());
 
                 simpMessagingTemplate.convertAndSend("/topic/lobby/added", params);
             }

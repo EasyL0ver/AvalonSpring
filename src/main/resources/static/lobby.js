@@ -12,35 +12,51 @@ function connect(api_key) {
         stompClient.subscribe('/topic/lobby/added', function (addedInfo) {
             onGameAdded(addedInfo)
         });
-        stompClient.subscribe('/topic/lobby/removed', function (uuid) {
-            onGameRemoved(uuid)
+        stompClient.subscribe('/topic/lobby/removed', function (removedInfo) {
+            onGameRemoved(JSON.parse(removedInfo.body))
         });
     });
-}
-
-function showGreeting(message) {
-    lobbyGames.append(message);
-
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
 }
 
 function onGameRemoved(removedUUID) {
     console.log("game removed");
     console.log(removedUUID);
 
-    $("#greetings").append("<tr><td>" + removedUUID + "</td></tr>");
+    lobbyGames = lobbyGames.filter(function (lobbyGame) {
+        return lobbyGame.gameUUID !== removedUUID;
+    });
+
+    updateGamesView();
 }
 
 function onGameAdded(addedParams) {
     console.log("game added");
     console.log(addedParams);
 
-    var parsed = JSON.parse(addedParams.body);
-    var stringrep = parsed.roomName + "hosted by: " + parsed.hostName
+    lobbyGames.push(JSON.parse(addedParams.body));
 
-    console.log(stringrep);
+    updateGamesView();
+}
 
-    $("#greetings").append("<tr><td>" + stringrep + "</td></tr>");
+function updateGamesView() {
+    console.log(lobbyGames)
+
+    console.log($("#greetings"));
+
+    var new_table_body = document.createElement("tbody")
+    new_table_body.id = "greetings";
+
+    console.log(new_table_body)
+
+    lobbyGames.forEach(function(lobbyGame){
+        new_table_body.append(lobbyGame.roomName)
+    })
+
+    var tableBody = document.getElementById("greetings")
+    var parentNode = tableBody.parentNode
+
+    parentNode.replaceChild(new_table_body, tableBody)
+
 }
 
 function authorize(api_key){
