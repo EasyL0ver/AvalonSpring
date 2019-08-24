@@ -8,12 +8,12 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
-<body>
+<body onbeforeunload="return disconnect()">
 WITAMY W LOBBY<br><br>
 <form action="/lobby/create_game" method="post">
     <input type="text" name="gameRoomName">
     <input type="hidden" name="userApiKey" th:value="${api_key}">
-    <input type="submit"/>
+    <input type="submit" value="Create game"/>
 </form><br><br>
 <table id="activeGames">
     <thead>
@@ -29,7 +29,8 @@ WITAMY W LOBBY<br><br>
     var apk = /*[[${api_key}]]*/ 'default';
     console.log(apk);
 
-    connect(apk);
+    Initialize(apk)
+
 
 </script>
 </body>

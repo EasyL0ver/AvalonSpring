@@ -1,7 +1,7 @@
 package lobby.gameroom;
 
 import authentication.User;
-import lobby.gameroom.GameRoom;
+import common.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +12,9 @@ public class MyGameRoom implements GameRoom {
     private final UUID gameUUID;
     private final List<User> gameUsers;
     private final String gameName;
+
+    private final Event<GameRoom> gameAbortedEvent = new Event<>();
+    private final Event<GameRoom> playerListChangedEvent = new Event<>();
 
     public MyGameRoom(User gameHost, UUID gameRoomUUID, String gameName){
         this.gameHost = gameHost;
@@ -25,13 +28,18 @@ public class MyGameRoom implements GameRoom {
     @Override
     public void join(User user) {
         gameUsers.add(user);
-        //todo notification
+        playerListChangedEvent.Invoke(this);
     }
 
     @Override
     public void leave(User user) {
         gameUsers.remove(user);
-        //todo notifictaion
+
+        if(user == gameHost){
+            gameAbortedEvent.Invoke(this);
+        }else {
+            playerListChangedEvent.Invoke(this);
+        }
     }
 
     @Override
@@ -42,6 +50,16 @@ public class MyGameRoom implements GameRoom {
     @Override
     public List<User> getUsersInGame() {
         return gameUsers;
+    }
+
+    @Override
+    public Event<GameRoom> getGameAbortedEvent() {
+        return gameAbortedEvent;
+    }
+
+    @Override
+    public Event<GameRoom> getPlayerListChangedEvent() {
+        return playerListChangedEvent;
     }
 
     public String getGameName() {

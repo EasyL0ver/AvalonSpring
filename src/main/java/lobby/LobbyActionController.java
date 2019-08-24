@@ -27,6 +27,11 @@ public class LobbyActionController extends UserSpecificMessageController {
 
         User user = FindRegisteredUserOrThrow(message);
 
+        GameRoom joinedGameRoom = gameLobby.getLobbyGames().get(message.getJoinedGameUUID());
+
+        joinedGameRoom.join(user);
+
+        ConfigureGameModel(model, user, joinedGameRoom);
 
         return "game_room";
     }
@@ -40,10 +45,7 @@ public class LobbyActionController extends UserSpecificMessageController {
 
         GameRoom gameRoom = gameLobby.createGameRoom(user, message.getGameRoomName());
 
-        model.addAttribute("host_name", user.getUserName());
-        model.addAttribute("room_name", gameRoom.getGameName());
-        model.addAttribute("room_uuid", gameRoom.getGameRoomUUID());
-        model.addAttribute("api_key", user.getUserApiKey());
+        ConfigureGameModel(model, user, gameRoom);
 
         return "game_room";
     }
@@ -60,7 +62,6 @@ public class LobbyActionController extends UserSpecificMessageController {
         super(userService);
 
         this.gameLobby = gameLobby;
-
     }
 
     private User FindRegisteredUserOrThrow(UserSpecificMessage message){
@@ -70,5 +71,12 @@ public class LobbyActionController extends UserSpecificMessageController {
             throw new SecurityException("user with api key: " + message.getUserApiKey() + " not found");
 
         return user;
+    }
+
+    private void ConfigureGameModel(Model model, User user, GameRoom room){
+        model.addAttribute("host_name", room.getHost().getUserName());
+        model.addAttribute("room_name", room.getGameName());
+        model.addAttribute("room_uuid", room.getGameRoomUUID());
+        model.addAttribute("api_key", user.getUserApiKey());
     }
 }
