@@ -1,6 +1,7 @@
 package lobby.gameroom;
 
 import authentication.User;
+import common.AdditionalRules;
 import common.Event;
 import common.EventHandler;
 
@@ -14,6 +15,7 @@ public interface GameRoom {
     UUID getGameRoomUUID();
 
     String getGameName();
+    AdditionalRules getAdditionalRules();
 
     User getHost();
 

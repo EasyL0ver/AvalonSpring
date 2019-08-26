@@ -1,5 +1,6 @@
 var stompClient = null;
-var lobbyGames = [];
+var usersInGame = [];
+
 var HttpClient = function() {
     this.get = function(aUrl, aCallback) {
         var anHttpRequest = new XMLHttpRequest();
@@ -12,22 +13,23 @@ var HttpClient = function() {
         anHttpRequest.send( null );
     }
 };
-var Initialize = function initialize(api_key) {
+var Initialize = function initialize(roomUUID) {
     var client = new HttpClient();
-    //todo relative path
-    client.get('http://localhost:9090/lobby/all', function (response) {
+    //todo relative url
+    client.get('http://localhost:9090/lobby/room/all?gameRoomUUID=' + roomUUID, function (response) {
         console.log("response");
         console.log(response);
 
-        var responses = JSON.parse(response);
+        var responses = JSON.parse(response)
+
         responses.forEach(function (response) {
-            lobbyGames.push(response)
+            usersInGame.push(response)
         });
 
-        console.log(lobbyGames)
+        console.log(usersInGame)
 
         updateGamesView();
-        stomp_connect(api_key)
+        stomp_connect(roomUUID)
     });
 };
 
@@ -57,20 +59,16 @@ function createJoinGameForm(lobbyGame){
     return joinGameForm;
 }
 
-function createLobbyTable(lobbyGames){
+function createLobbyTable(usersInGame){
     var new_table_body = document.createElement("tbody");
     new_table_body.id = "greetings";
 
-    lobbyGames.forEach(function(lobbyGame){
+    usersInGame.forEach(function(lobbyGame){
         var row = document.createElement("tr");
         var name_cell = document.createElement("td");
-        name_cell.innerHTML = lobbyGame.roomName;
-
-        var other_cell = document.createElement("td");
-        other_cell.appendChild(createJoinGameForm(lobbyGame));
+        name_cell.innerHTML = lobbyGame;
 
         row.appendChild(name_cell);
-        row.appendChild(other_cell);
 
         new_table_body.appendChild(row)
     });
@@ -79,10 +77,8 @@ function createLobbyTable(lobbyGames){
 }
 
 function updateGamesView() {
-    console.log(lobbyGames);
-    console.log($("#greetings"));
 
-    var new_table_body = createLobbyTable(lobbyGames)
+    var new_table_body = createLobbyTable(usersInGame)
     var tableBody = document.getElementById("greetings")
     var parentNode = tableBody.parentNode
 
@@ -117,35 +113,29 @@ function onGameAdded(addedParams) {
     updateGamesView();
 }
 
-function stomp_connect() {
+function stomp_connect(roomUUID) {
     var socket = new SockJS('/gs-guide-websocket');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/lobby/added', function (addedInfo) {
-            onGameAdded(addedInfo)
+
+        var playerListRefreshedUrl = "/topic/lobby/room/" + roomUUID + "/users";
+        var gameAbortedUrl = "/topic/lobby/room/" + roomUUID + "/abort"
+
+        console.log(playerListRefreshedUrl)
+        console.log(gameAbortedUrl)
+
+        stompClient.subscribe(playerListRefreshedUrl, function (playerList) {
+            console.log("updated");
+            console.log(playerList);
+
+            usersInGame = JSON.parse(playerList.body);
+            updateGamesView();
         });
-        stompClient.subscribe('/topic/lobby/removed', function (removedInfo) {
-            onGameRemoved(JSON.parse(removedInfo.body))
+        stompClient.subscribe(gameAbortedUrl, function (removedInfo) {
+            console.log(removedInfo);
         });
     });
+}
 
-function initialize(api_key) {
-    var client = new HttpClient();
-    client.get('http://localhost:9090/lobby/all', function (response) {
-        console.log("response");
-        console.log(response);
-
-        var responses = JSON.parse(response);
-
-        responses.forEach(function (response) {
-            lobbyGames.push(response);
-        });
-
-        console.log(lobbyGames);
-
-        updateGamesView();
-        stomp_connect(api_key);
-    });
-}}
 

@@ -1,6 +1,7 @@
 package lobby.gameroom;
 
 import authentication.User;
+import common.AdditionalRules;
 import common.Event;
 
 import java.util.ArrayList;
@@ -65,6 +66,12 @@ public class MyGameRoom implements GameRoom {
     public String getGameName() {
         return gameName;
     }
+
+    @Override
+    public AdditionalRules getAdditionalRules() {
+        return new AdditionalRules();
+    }
+
     @Override
     public User getHost() { return gameHost; }
 }

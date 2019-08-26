@@ -3,11 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="/game_room.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
 <body>
     Witam cb w game room<br>
     <p th:text="'Hosted by ' + ${host_name} + '!'" />
     <p th:text="'Room name: ' + ${room_name} + '!'" /><br>
+    <table id="activeGames">
+        <thead>
+        <tr>
+            <th>Active Games</th>
+        </tr>
+        </thead>
+        <tbody id="greetings">
+
+        </tbody>
+    </table>
     <form action="/lobby/room/start_game" method="post">
         <input type="hidden" name="userApiKey" th:value="${api_key}">
         <input type="hidden" name="gameUUID" th:value="${room_uuid}">
@@ -18,5 +32,10 @@
         <input type="hidden" name="gameUUID" th:value="${room_uuid}">
         <input value="abort" type="submit"/>
     </form><br>
+<script th:inline="javascript">
+    var apk = /*[[${api_key}]]*/ 'default';
+    var roomId = /*[[${room_uuid}]]*/ 'default';
+    Initialize(roomId)
+</script>
 </body>
 </html>
