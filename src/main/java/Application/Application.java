@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(basePackages = "data")
 @EnableAutoConfiguration
 @EntityScan(basePackages = "data")
-@ComponentScan(basePackages = {"socketTest", "test", "authentication", "lobby", "Application", "data"})
+@ComponentScan(basePackages = {"socketTest", "test", "authentication", "lobby", "Application", "data", "game"})
 public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

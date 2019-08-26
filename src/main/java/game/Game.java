@@ -6,30 +6,32 @@ import game.gamePhases.PickTeamGamePhase;
 import game.gamePhases.ResolveTeamPhase;
 import game.gamePhases.VoteTeamGamePhase;
 
-import java.util.UUID;
 
 public class Game {
     private final PlayerCollection playerCollection;
     private final ScoreTracker scoreTracker;
     private final GameRules gameRules;
-    private final UUID gameUUID;
 
     private Integer round = 0;
 
-    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GameRules gameRules, UUID gameUUID) {
+    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GameRules gameRules) {
         this.playerCollection = playerCollection;
         this.scoreTracker = scoreTracker;
         this.gameRules = gameRules;
-        this.gameUUID = gameUUID;
     }
 
+    public PlayerCollection getPlayerCollection(){
+        return playerCollection;
+    }
 
-    public void Start(){
+    void Start() throws InterruptedException {
         //todo start game timer
 
         try {
 
             while(true){
+
+                WaitFor(10);
 
                 PlayerTeam decidedTeam = null;
 
@@ -55,10 +57,7 @@ public class Game {
             //todo reveal assasin etc
             e.printStackTrace();
         }
-
-
     }
-
 
     private PlayerTeam PickTeam() throws GameOverException {
         PlayerTeam resolvedPlayerTeam = null;
@@ -98,6 +97,10 @@ public class Game {
             e.printStackTrace();
             return true;
         }
+    }
+
+    private void WaitFor(Integer seconds) throws InterruptedException {
+        Thread.sleep(seconds * 1000);
     }
 
 }

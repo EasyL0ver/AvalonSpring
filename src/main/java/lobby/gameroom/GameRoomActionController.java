@@ -24,7 +24,7 @@ public class GameRoomActionController extends UserSpecificMessageController {
     }
 
     @PostMapping("/lobby/room/start_game")
-    public String startGame(GameRoomMessage message) {
+    public String startGame(GameRoomMessage message, Model model) {
         GameRoom gameRoom = FindGameRoom(message);
         User user = FindUser(message);
 
@@ -36,6 +36,9 @@ public class GameRoomActionController extends UserSpecificMessageController {
             throw new SecurityException("only host can start the game");
 
         lobby.startGame(gameRoom);
+
+        model.addAttribute("api_key", user.getUserApiKey());
+        model.addAttribute("room_uuid", gameRoom.getGameRoomUUID());
 
         return "game";
     }

@@ -1,23 +1,58 @@
 package game;
 
-import common.EventHandler;
-import lobby.GameLobby;
+import game.dto.CompleteGameState;
+import game.gameBuilder.GameBuilder;
 import lobby.gameroom.GameRoom;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Component
 public class GameManager {
-
-    private final GameLobby gameLobby;
+    private final GameBuilder gameBuilder;
+    private final Map<UUID, Game> gameMap;
+    private final GameStateBuilder gameStateBuilder;
 
     @Autowired
-    public GameManager(GameLobby gameLobby) {
-        this.gameLobby = gameLobby;
+    public GameManager(GameBuilder gameBuilder, GameStateBuilder gameStateBuilder){
+        this.gameBuilder = gameBuilder;
+        this.gameStateBuilder = gameStateBuilder;
 
-        gameLobby.getGameStartedEvent().AttachHandler(new EventHandler<GameRoom>() {
-            @Override
-            public void Handle(GameRoom params) {
-
-            }
-        });
+        gameMap = new ConcurrentHashMap<>();
     }
+
+    public void startGame(GameRoom room){
+        Game game = gameBuilder.Build(room);
+
+        gameMap.put(room.getGameRoomUUID(), game);
+
+        new Thread(() -> {
+            try {
+                game.Start();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    public CompleteGameState loadCompleteGameState(UUID playerApiKey, UUID gameRoomUUID) throws Exception {
+        if(!gameMap.containsKey(gameRoomUUID))
+            throw new Exception("game not found");
+
+        Game game = gameMap.get(gameRoomUUID);
+
+        PlayerCollection playerCollection = game.getPlayerCollection();
+
+        if(!playerCollection.getPlayerList().containsKey(playerApiKey))
+            throw new Exception("player not present in the game");
+
+        Player player = playerCollection.getPlayerList().get(playerApiKey);
+
+
+        return gameStateBuilder.Build(game, player);
+    }
+
 }

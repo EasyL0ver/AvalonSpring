@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/jdbc">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="/game.js"></script>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
-<body>
+<body onbeforeunload="return disconnect()">
     GRAMY QRWA :]
+<script th:inline="javascript">
+    var apk = /*[[${api_key}]]*/ 'default';
+    var roomId = /*[[${room_uuid}]]*/ 'default';
+    Initialize(roomId, apk)
+</script>
 </body>
 </html>

@@ -50,6 +50,9 @@ public class LobbyActionController extends UserSpecificMessageController {
         return "game_room";
     }
 
+
+
+
     public String logout(HttpServletResponse response) {
 
         return "todo";

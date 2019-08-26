@@ -1,21 +1,19 @@
 package game;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PlayerCollection {
-    private final List<Player> playerList;
+    private final Map<UUID, Player> playerList;
     private Integer activePlayerIndex;
 
-    public PlayerCollection(List<Player> playerList, Integer activePlayerIndex) {
+    public PlayerCollection(Map<UUID, Player> playerList, Integer activePlayerIndex) {
         this.playerList = playerList;
         this.activePlayerIndex = activePlayerIndex;
+
     }
 
-    public List<Player> getPlayerList() {
+    public Map<UUID, Player> getPlayerList(){
         return playerList;
     }
 
@@ -23,7 +21,7 @@ public class PlayerCollection {
 
         Set<AvalonRole> filteredRolesSet = new HashSet<>(Arrays.asList(roles));
 
-        return playerList.stream().filter(player -> filteredRolesSet.contains(player.getPlayerRole())).collect(Collectors.toList());
+        return playerList.values().stream().filter(player -> filteredRolesSet.contains(player.getPlayerRole())).collect(Collectors.toList());
     }
 
     public void activePlayerMoveNext(){
@@ -40,6 +38,6 @@ public class PlayerCollection {
     }
 
     public List<Player> getNonActivePlayers(){
-        return playerList.stream().filter(player -> player != getActivePlayer()).collect(Collectors.toList());
+        return playerList.values().stream().filter(player -> player != getActivePlayer()).collect(Collectors.toList());
     }
 }

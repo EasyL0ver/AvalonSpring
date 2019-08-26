@@ -23,12 +23,11 @@ public class Player implements VisiblePlayer{
 
     @Override
     public String getPlayerName() {
-        return null;
+        return user.getUserName();
     }
 
-    @Override
     public Integer getPlayerId() {
-        return null;
+        return playerIndex;
     }
 
     public void notify(GameNotification notification){
