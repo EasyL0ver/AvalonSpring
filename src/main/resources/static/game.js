@@ -32,6 +32,20 @@ var Initialize = function initialize(roomUUID, api_key) {
 
 
         //updateGamesView();
-        //stomp_connect(roomUUID)
+        stomp_connect(roomUUID, api_key)
     });
 };
+
+
+function stomp_connect(roomUUID, api_key) {
+    var socket = new SockJS('/gs-guide-websocket');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe("/topic/game/user-specific/" + api_key, function (addedInfo) {
+            console.log(addedInfo)
+        });
+        stompClient.subscribe('/topic/lobby/removed', function (removedInfo) {
+            onGameRemoved(JSON.parse(removedInfo.body))
+        });
+    })}

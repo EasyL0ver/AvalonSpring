@@ -4,6 +4,7 @@ import authentication.User;
 import common.Event;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Player implements VisiblePlayer{
 
@@ -29,16 +30,10 @@ public class Player implements VisiblePlayer{
         return user.getUserName();
     }
 
+    public UUID getUserUUID() {return user.getUserApiKey();}
+
     public Integer getPlayerId() {
         return playerIndex;
-    }
-
-    public void Request(Object request){
-
-    }
-
-    public void notify(GameNotification notification){
-
     }
 
     public Event<game.dto.responses.Response> getResponseReceivedEvent(){

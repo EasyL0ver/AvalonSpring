@@ -3,7 +3,10 @@ package game.gamePhases;
 import common.EventHandler;
 import game.GamePhase;
 import game.Player;
-import game.dto.requests.Request;
+import game.PlayerTeam;
+import game.communication.ClientGameCommunicationAPI;
+import game.dto.GamePhaseInfo;
+import game.dto.GamePhaseType;
 import game.dto.responses.Response;
 import game.dto.responses.VoteResponse;
 import game.exceptions.PhaseFailedException;
@@ -17,9 +20,11 @@ public class VotePhase implements GamePhase<Boolean> {
 
     private final Integer voteTimeSeconds;
     private final List<Player> votingPlayers;
-    private final VoteType responseVoteType;
-    private final Request requestSent;
+    private final PlayerTeam votedTeam;
+    private final GamePhaseType responseVoteType;
     private final VoteResultStrategy resultStrategy;
+
+    private final ClientGameCommunicationAPI clientGameCommunicationAPI;
 
     private final Map<Integer, Boolean> teamVotes = new ConcurrentHashMap<>();
     private final EventHandler<Response> responseEventHandler = new EventHandler<Response>() {
@@ -37,12 +42,13 @@ public class VotePhase implements GamePhase<Boolean> {
         }
     };
 
-    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, VoteType responseVoteType, Request requestSent, VoteResultStrategy resultStrategy) {
+    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, GamePhaseType responseVoteType, VoteResultStrategy resultStrategy, ClientGameCommunicationAPI clientGameCommunicationAPI, PlayerTeam votedTeam) {
         this.voteTimeSeconds = voteTimeSeconds;
         this.votingPlayers = votingPlayers;
         this.responseVoteType = responseVoteType;
-        this.requestSent = requestSent;
         this.resultStrategy = resultStrategy;
+        this.clientGameCommunicationAPI = clientGameCommunicationAPI;
+        this.votedTeam = votedTeam;
     }
 
     @Override
@@ -51,8 +57,9 @@ public class VotePhase implements GamePhase<Boolean> {
         try{
             for(Player player : votingPlayers){
                 player.getResponseReceivedEvent().AttachHandler(responseEventHandler);
-                player.Request(requestSent);
             }
+
+            clientGameCommunicationAPI.AnnouncePhaseChanged(votingPlayers, getGamePhaseChangedInfo());
 
             Long timeElapsed = 0L;
             boolean timedOut = false;
@@ -72,8 +79,13 @@ public class VotePhase implements GamePhase<Boolean> {
         return resultStrategy.resolveVoteResult(teamVotes.values());
     }
 
+    @Override
+    public GamePhaseInfo getGamePhaseChangedInfo() {
+        return new GamePhaseInfo(responseVoteType, voteTimeSeconds, votedTeam.getTeamCreator().getPlayerId(), votedTeam.getPlayersIds());
+    }
 
     private Boolean isVoteFinished(){
         return teamVotes.size() == votingPlayers.size();
     }
+
 }

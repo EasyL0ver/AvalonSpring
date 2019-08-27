@@ -2,8 +2,9 @@ package game.gameBuilder;
 
 import authentication.User;
 import game.*;
-import game.notifications.PlayerInfo;
+import game.dto.PlayerInfo;
 import lobby.gameroom.GameRoom;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -11,22 +12,29 @@ import java.util.stream.Collectors;
 
 @Component
 public class GameBuilder {
+    private final GamePhaseFactory gamePhaseFactory;
+    private final GameRulesProvider gameRulesProvider;
+
+    @Autowired
+    public GameBuilder(GamePhaseFactory gamePhaseFactory, GameRulesProvider gameRulesProvider) {
+        this.gamePhaseFactory = gamePhaseFactory;
+        this.gameRulesProvider = gameRulesProvider;
+    }
 
     public Game Build(GameRoom gameRoom){
         List<User> usersInGame = gameRoom.getUsersInGame();
-        GameRolesProvider gameRolesProvider = new GameRolesProvider(usersInGame.size(), gameRoom.getAdditionalRules());
+        GameRolesProvider gameRolesProvider = new GameRolesProvider(usersInGame.size(), gameRulesProvider.GetEvilPlayersCount(usersInGame.size()), gameRoom.getAdditionalRules());
         List<AvalonRole> shuffledRoles = gameRolesProvider.GetShuffledRoles();
 
         Collections.shuffle(usersInGame);
         Map<UUID, Player> gamePlayers = PopulatePlayerList(usersInGame, shuffledRoles);
 
         PlayerCollection gamePlayerCollection = new PlayerCollection(gamePlayers, 0);
-        GameRules gameRules = new GameRules(usersInGame.size());
         ScoreTracker scoreTracker = new ScoreTracker(3, 5);
 
         AddIdentityInformation(gamePlayerCollection);
 
-        return new Game(gamePlayerCollection, scoreTracker, gameRules);
+        return new Game(gamePlayerCollection, scoreTracker, gamePhaseFactory);
     }
 
     private Map<UUID, Player> PopulatePlayerList(List<User> usersInGame, List<AvalonRole> shuffledRoles) {

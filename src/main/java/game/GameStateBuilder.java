@@ -1,7 +1,7 @@
 package game;
 
 import game.dto.CompleteGameState;
-import game.notifications.PlayerInfo;
+import game.dto.PlayerInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,6 +27,8 @@ public class GameStateBuilder {
                 .stream().map(VisiblePlayer::getPlayerId).collect(Collectors.toList());
 
         gameState.myId = player.getPlayerId();
+
+        gameState.gamePhaseInfo = game.getGamePhaseInfo();
 
         return gameState;
     }

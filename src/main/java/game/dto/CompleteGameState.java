@@ -10,4 +10,7 @@ public class CompleteGameState {
     public List<Integer> identityInfo;
     public AvalonRole role;
     public Integer myId;
+
+    public GamePhaseInfo gamePhaseInfo;
+
 }

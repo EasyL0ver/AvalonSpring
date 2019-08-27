@@ -34,7 +34,7 @@ public class PlayerCollection {
     }
 
     public Player getActivePlayer(){
-        return playerList.get(activePlayerIndex);
+        return playerList.values().stream().filter(x -> x.getPlayerId().equals(activePlayerIndex)).collect(Collectors.toList()).get(0);
     }
 
     public List<Player> getNonActivePlayers(){

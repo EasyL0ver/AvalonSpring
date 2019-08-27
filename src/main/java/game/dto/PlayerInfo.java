@@ -1,4 +1,4 @@
-package game.notifications;
+package game.dto;
 
 import game.VisiblePlayer;
 

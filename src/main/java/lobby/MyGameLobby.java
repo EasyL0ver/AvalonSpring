@@ -44,7 +44,7 @@ public class MyGameLobby implements GameLobby {
         gameAddedEvent.Invoke(gameRoom);
 
         //todo for testing
-        AddTestUsers(gameRoom);
+        //AddTestUsers(gameRoom);
 
 
         return gameRoom;

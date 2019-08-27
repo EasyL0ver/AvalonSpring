@@ -6,7 +6,9 @@ import game.GamePhase;
 import game.Player;
 import game.PlayerCollection;
 import game.PlayerTeam;
-import game.dto.requests.PickTeamRequest;
+import game.communication.ClientGameCommunicationAPI;
+import game.dto.GamePhaseInfo;
+import game.dto.GamePhaseType;
 import game.dto.responses.PickTeamResponse;
 import game.dto.responses.Response;
 import game.exceptions.PhaseFailedException;
@@ -23,6 +25,8 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
     private final Player playerPickingTeam;
     private final PlayerCollection playerCollection;
 
+    private final ClientGameCommunicationAPI communicationAPI;
+
     private final EventHandler<Response> responseHandler = new EventHandler<Response>() {
         @Override
         public void Handle(Response params) {
@@ -34,11 +38,12 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
     private Response activePlayerResponse = null;
 
-    public PickTeamGamePhase(Player playerPickingTeam, PlayerCollection playerCollection, Integer teamSize, Integer responseTimeSeconds) {
+    public PickTeamGamePhase(Player playerPickingTeam, PlayerCollection playerCollection, Integer teamSize, Integer responseTimeSeconds, ClientGameCommunicationAPI communicationAPI) {
         this.teamSize = teamSize;
         this.responseTimeSeconds = responseTimeSeconds;
         this.playerPickingTeam = playerPickingTeam;
         this.playerCollection = playerCollection;
+        this.communicationAPI = communicationAPI;
     }
 
     @Override
@@ -46,7 +51,8 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
         playerPickingTeam.getResponseReceivedEvent().AttachHandler(responseHandler);
 
         try{
-            playerPickingTeam.Request(new PickTeamRequest(teamSize));
+
+            communicationAPI.AnnouncePhaseChanged(playerCollection.getPlayerList().values(), getGamePhaseChangedInfo());
 
             Long timeElapsedMillis = 0L;
 
@@ -69,6 +75,11 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
         return CreateFromResponse(activePlayerResponse);
     }
 
+    @Override
+    public GamePhaseInfo getGamePhaseChangedInfo() {
+        return new GamePhaseInfo(GamePhaseType.PickTeam, responseTimeSeconds, playerCollection.getActivePlayer().getPlayerId(), null);
+    }
+
     private PlayerTeam CreateFromResponse(Response response) throws PhaseFailedException {
         //response type mismatch
         if(!(response instanceof PickTeamResponse))
@@ -86,7 +97,7 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
                 .filter(player -> responseHashSet.contains(player.getPlayerId()))
                 .collect(Collectors.toList());
 
-        return new PlayerTeam(teamPlayers);
+        return new PlayerTeam(teamPlayers, playerPickingTeam);
     }
 }
 

@@ -1,24 +1,30 @@
 package game;
 
-import game.dto.requests.VoteTeamRequest;
+import game.dto.GamePhaseInfo;
 import game.exceptions.GameOverException;
 import game.exceptions.PhaseFailedException;
-import game.gamePhases.*;
-
-import java.util.List;
+import game.gameBuilder.GamePhaseFactory;
 
 
 public class Game {
     private final PlayerCollection playerCollection;
     private final ScoreTracker scoreTracker;
-    private final GameRules gameRules;
+    private final GamePhaseFactory gamePhaseFactory;
 
     private Integer round = 0;
+    private GamePhase currentGamePhase;
 
-    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GameRules gameRules) {
+    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GamePhaseFactory gamePhaseFactory) {
         this.playerCollection = playerCollection;
         this.scoreTracker = scoreTracker;
-        this.gameRules = gameRules;
+        this.gamePhaseFactory = gamePhaseFactory;
+    }
+
+    public GamePhaseInfo getGamePhaseInfo(){
+        if(currentGamePhase == null)
+            return null;
+
+        return currentGamePhase.getGamePhaseChangedInfo();
     }
 
     public PlayerCollection getPlayerCollection(){
@@ -26,86 +32,68 @@ public class Game {
     }
 
     void Start() throws InterruptedException {
-        //todo start game timer
+
+        Thread.sleep(1000*5);
 
         try {
-
             while(true){
 
-                WaitFor(10);
+                PlayerTeam playerTeam = chooseTeam();
 
-                PlayerTeam decidedTeam = null;
+                GamePhase<Boolean> missionPhase = gamePhaseFactory.BuildMissionPhase(playerCollection, playerTeam, round);
 
-                while(decidedTeam == null){
-                    PlayerTeam proposedTeam = PickTeam();
+                currentGamePhase = missionPhase;
 
-                    if(VoteTeam(proposedTeam))
-                        decidedTeam = proposedTeam;
-                    else{
-                        scoreTracker.ReportFailure();
-                        playerCollection.activePlayerMoveNext();
-                    }
-                }
-
-                if(ResolveTeamPhase(decidedTeam))
+                if(missionPhase.resolve())
                     scoreTracker.IncerementGood();
                 else
                     scoreTracker.IncrementEvil();
 
                 round++;
+                playerCollection.activePlayerMoveNext();
             }
         } catch (GameOverException e) {
             //todo reveal assasin etc
             e.printStackTrace();
+        } catch (PhaseFailedException e) {
+            e.printStackTrace();
         }
     }
 
-    private PlayerTeam PickTeam() throws GameOverException, InterruptedException {
-        PlayerTeam resolvedPlayerTeam = null;
+    private PlayerTeam proposeTeam() throws GameOverException, InterruptedException {
+        PlayerTeam proposedTeam = null;
 
-        while(resolvedPlayerTeam == null){
+        while(proposedTeam == null){
             try{
-                PickTeamGamePhase pickTeamGamePhase = new PickTeamGamePhase(playerCollection.getActivePlayer(),playerCollection, gameRules.GetTeamSize(round),120);
-                resolvedPlayerTeam = pickTeamGamePhase.resolve();
+                GamePhase<PlayerTeam> pickTeamGamePhase = gamePhaseFactory.BuildPickingPhase(playerCollection, round);
+                currentGamePhase = pickTeamGamePhase;
+                proposedTeam = pickTeamGamePhase.resolve();
             }catch (PhaseFailedException e){
                 playerCollection.activePlayerMoveNext();
                 scoreTracker.ReportFailure();
             }
         }
 
-        return resolvedPlayerTeam;
+        return proposedTeam;
     }
 
-    private Boolean VoteTeam(PlayerTeam playerTeam) throws InterruptedException {
-        VoteTeamRequest voteRequest = new VoteTeamRequest(playerTeam.getPlayersIds(), VoteType.TeamVote);
-        List<Player> allPlayers = playerTeam.getPlayers();
-        VoteResultStrategy resultStrategy = gameRules.getTeamVoteResultStrategy();
+    private PlayerTeam chooseTeam() throws GameOverException, InterruptedException, PhaseFailedException {
+        PlayerTeam decidedTeam = null;
 
-        VotePhase voteTeamGamePhase = new VotePhase(120, allPlayers, VoteType.TeamVote, voteRequest, resultStrategy);
+        while(decidedTeam == null){
 
-        try {
-            return voteTeamGamePhase.resolve();
-        } catch (PhaseFailedException e) {
-            e.printStackTrace();
-            return true;
+            PlayerTeam proposedTeam = proposeTeam();
+
+            GamePhase<Boolean> voteOnTeamPhase = gamePhaseFactory.BuildVotePhase(playerCollection, proposedTeam);
+
+            currentGamePhase = voteOnTeamPhase;
+            if(voteOnTeamPhase.resolve())
+                decidedTeam = proposedTeam;
+            else{
+                scoreTracker.ReportFailure();
+                playerCollection.activePlayerMoveNext();
+            }
         }
+        return decidedTeam;
     }
-
-    private Boolean ResolveTeamPhase(PlayerTeam playerTeam) throws InterruptedException {
-        VoteTeamRequest voteTeamRequest = new VoteTeamRequest(playerTeam.getPlayersIds(), VoteType.MissionVote);
-        VoteResultStrategy resultStrategy = gameRules.getMissionVoteResultStrategy(round);
-        VotePhase missionGamePhase = new VotePhase(120, playerTeam.getPlayers(),VoteType.MissionVote, voteTeamRequest, resultStrategy);
-
-        try {
-            return missionGamePhase.resolve();
-        } catch (PhaseFailedException e) {
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    private void WaitFor(Integer seconds) throws InterruptedException {
-        Thread.sleep(seconds * 1000);
-    }
-
 }
