@@ -1,5 +1,9 @@
 package game;
 
+import game.gamePhases.VoteResultStrategy;
+
+import java.util.Collection;
+
 //todo implement
 public class GameRules {
 
@@ -13,9 +17,23 @@ public class GameRules {
         return 2;
     }
 
-    public Integer GetAllowedFails(Integer round){
-        return 1;
-
+    public VoteResultStrategy getMissionVoteResultStrategy(Integer round){
+        return new VoteResultStrategy() {
+            @Override
+            public Boolean resolveVoteResult(Collection<Boolean> voteResults) {
+                return null;
+            }
+        };
     }
+
+    public VoteResultStrategy getTeamVoteResultStrategy(){
+        return new VoteResultStrategy() {
+            @Override
+            public Boolean resolveVoteResult(Collection<Boolean> voteResults) {
+                return null;
+            }
+        };
+    }
+
 
 }

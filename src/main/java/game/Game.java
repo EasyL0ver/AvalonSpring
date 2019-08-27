@@ -1,10 +1,11 @@
 package game;
 
+import game.dto.requests.VoteTeamRequest;
 import game.exceptions.GameOverException;
 import game.exceptions.PhaseFailedException;
-import game.gamePhases.PickTeamGamePhase;
-import game.gamePhases.ResolveTeamPhase;
-import game.gamePhases.VoteTeamGamePhase;
+import game.gamePhases.*;
+
+import java.util.List;
 
 
 public class Game {
@@ -59,12 +60,12 @@ public class Game {
         }
     }
 
-    private PlayerTeam PickTeam() throws GameOverException {
+    private PlayerTeam PickTeam() throws GameOverException, InterruptedException {
         PlayerTeam resolvedPlayerTeam = null;
 
         while(resolvedPlayerTeam == null){
             try{
-                PickTeamGamePhase pickTeamGamePhase = new PickTeamGamePhase(playerCollection, gameRules.GetTeamSize(round));
+                PickTeamGamePhase pickTeamGamePhase = new PickTeamGamePhase(playerCollection.getActivePlayer(),playerCollection, gameRules.GetTeamSize(round),120);
                 resolvedPlayerTeam = pickTeamGamePhase.resolve();
             }catch (PhaseFailedException e){
                 playerCollection.activePlayerMoveNext();
@@ -75,9 +76,12 @@ public class Game {
         return resolvedPlayerTeam;
     }
 
-    private Boolean VoteTeam(PlayerTeam playerTeam) {
+    private Boolean VoteTeam(PlayerTeam playerTeam) throws InterruptedException {
+        VoteTeamRequest voteRequest = new VoteTeamRequest(playerTeam.getPlayersIds(), VoteType.TeamVote);
+        List<Player> allPlayers = playerTeam.getPlayers();
+        VoteResultStrategy resultStrategy = gameRules.getTeamVoteResultStrategy();
 
-        VoteTeamGamePhase voteTeamGamePhase = new VoteTeamGamePhase(playerCollection, playerTeam);
+        VotePhase voteTeamGamePhase = new VotePhase(120, allPlayers, VoteType.TeamVote, voteRequest, resultStrategy);
 
         try {
             return voteTeamGamePhase.resolve();
@@ -87,12 +91,13 @@ public class Game {
         }
     }
 
-    private Boolean ResolveTeamPhase(PlayerTeam playerTeam){
-
-        ResolveTeamPhase resolveTeamPhase = new ResolveTeamPhase(playerCollection, playerTeam, gameRules.GetAllowedFails(round));
+    private Boolean ResolveTeamPhase(PlayerTeam playerTeam) throws InterruptedException {
+        VoteTeamRequest voteTeamRequest = new VoteTeamRequest(playerTeam.getPlayersIds(), VoteType.MissionVote);
+        VoteResultStrategy resultStrategy = gameRules.getMissionVoteResultStrategy(round);
+        VotePhase missionGamePhase = new VotePhase(120, playerTeam.getPlayers(),VoteType.MissionVote, voteTeamRequest, resultStrategy);
 
         try {
-            return resolveTeamPhase.resolve();
+            return missionGamePhase.resolve();
         } catch (PhaseFailedException e) {
             e.printStackTrace();
             return true;

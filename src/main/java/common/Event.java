@@ -11,6 +11,8 @@ public class Event<T> {
         attachedEventHandlers.add(eventHandler);
     }
 
+    public void DetachHandler(EventHandler<T> eventHandler) {attachedEventHandlers.remove(eventHandler);}
+
     public void Invoke(T params){
         for(EventHandler<T> eventHandler : attachedEventHandlers){
             eventHandler.Handle(params);
