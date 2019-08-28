@@ -11,9 +11,9 @@
 <body onbeforeunload="return disconnect()">
     GRAMY QRWA :]
 <script th:inline="javascript">
-    var apk = /*[[${api_key}]]*/ 'default';
-    var roomId = /*[[${room_uuid}]]*/ 'default';
-    Initialize(roomId, apk)
+    apiKey = /*[[${api_key}]]*/ 'default';
+    gameUUID = /*[[${room_uuid}]]*/ 'default';
+    Initialize()
 </script>
 </body>
 </html>

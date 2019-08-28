@@ -1,6 +1,7 @@
 package game;
 
 import game.dto.GamePhaseInfo;
+import game.dto.responses.ScoreBoard;
 import game.exceptions.GameOverException;
 import game.exceptions.PhaseFailedException;
 import game.gameBuilder.GamePhaseFactory;
@@ -20,6 +21,10 @@ public class Game {
         this.gamePhaseFactory = gamePhaseFactory;
     }
 
+    public ScoreBoard getScore(){
+        return scoreTracker.getScoreBoard();
+    }
+
     public GamePhaseInfo getGamePhaseInfo(){
         if(currentGamePhase == null)
             return null;
@@ -31,7 +36,7 @@ public class Game {
         return playerCollection;
     }
 
-    void Start() throws InterruptedException {
+    void Start() throws InterruptedException, PhaseFailedException {
 
         Thread.sleep(1000*5);
 
@@ -53,8 +58,9 @@ public class Game {
                 playerCollection.activePlayerMoveNext();
             }
         } catch (GameOverException e) {
-            //todo reveal assasin etc
-            e.printStackTrace();
+            GamePhase<Boolean> revealPhase = gamePhaseFactory.BuildRevealPhase(playerCollection, e.getOutcome());
+            Boolean result = revealPhase.resolve();
+
         } catch (PhaseFailedException e) {
             e.printStackTrace();
         }

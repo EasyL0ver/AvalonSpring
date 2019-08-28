@@ -9,4 +9,8 @@ public class GameOverException extends Exception{
 
         this.outcome = outcome;
     }
+
+    public Boolean getOutcome() {
+        return outcome;
+    }
 }

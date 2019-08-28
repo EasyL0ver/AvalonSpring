@@ -2,6 +2,7 @@ package game;
 
 import authentication.User;
 import common.Event;
+import game.dto.GameAction;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +14,7 @@ public class Player implements VisiblePlayer{
     private List<VisiblePlayer> identityInformation;
     private final User user;
 
-    private final Event<game.dto.responses.Response> requestResponseReceivedEvent = new Event<>();
+    private final Event<GameAction> gameActionReceivedEvent = new Event<>();
 
     public Player(Integer playerIndex, AvalonRole playerRole, User user) {
         this.playerIndex = playerIndex;
@@ -36,8 +37,8 @@ public class Player implements VisiblePlayer{
         return playerIndex;
     }
 
-    public Event<game.dto.responses.Response> getResponseReceivedEvent(){
-        return requestResponseReceivedEvent;
+    public Event<GameAction> getGameActionReceivedEvent(){
+        return gameActionReceivedEvent;
     }
 
     public List<VisiblePlayer> getIdentityInformation() {

@@ -29,6 +29,7 @@ public class GameStateBuilder {
         gameState.myId = player.getPlayerId();
 
         gameState.gamePhaseInfo = game.getGamePhaseInfo();
+        gameState.scoreBoard = game.getScore();
 
         return gameState;
     }

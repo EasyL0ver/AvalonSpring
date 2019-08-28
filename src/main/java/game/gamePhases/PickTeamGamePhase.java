@@ -6,11 +6,11 @@ import game.GamePhase;
 import game.Player;
 import game.PlayerCollection;
 import game.PlayerTeam;
-import game.communication.ClientGameCommunicationAPI;
+import game.communication.OutgoingGameCommunicationAPI;
+import game.dto.GameAction;
 import game.dto.GamePhaseInfo;
 import game.dto.GamePhaseType;
-import game.dto.responses.PickTeamResponse;
-import game.dto.responses.Response;
+import game.dto.NominateTeamGameAction;
 import game.exceptions.PhaseFailedException;
 
 import java.util.HashSet;
@@ -25,20 +25,20 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
     private final Player playerPickingTeam;
     private final PlayerCollection playerCollection;
 
-    private final ClientGameCommunicationAPI communicationAPI;
+    private final OutgoingGameCommunicationAPI communicationAPI;
 
-    private final EventHandler<Response> responseHandler = new EventHandler<Response>() {
+    private final EventHandler<GameAction> responseHandler = new EventHandler<GameAction>() {
         @Override
-        public void Handle(Response params) {
+        public void Handle(GameAction params) {
             activePlayerResponse = params;
-            playerPickingTeam.getResponseReceivedEvent().DetachHandler(responseHandler);
+            playerPickingTeam.getGameActionReceivedEvent().DetachHandler(responseHandler);
 
         }
     };
 
-    private Response activePlayerResponse = null;
+    private GameAction activePlayerResponse = null;
 
-    public PickTeamGamePhase(Player playerPickingTeam, PlayerCollection playerCollection, Integer teamSize, Integer responseTimeSeconds, ClientGameCommunicationAPI communicationAPI) {
+    public PickTeamGamePhase(Player playerPickingTeam, PlayerCollection playerCollection, Integer teamSize, Integer responseTimeSeconds, OutgoingGameCommunicationAPI communicationAPI) {
         this.teamSize = teamSize;
         this.responseTimeSeconds = responseTimeSeconds;
         this.playerPickingTeam = playerPickingTeam;
@@ -48,7 +48,7 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
     @Override
     public PlayerTeam resolve() throws PhaseFailedException, InterruptedException {
-        playerPickingTeam.getResponseReceivedEvent().AttachHandler(responseHandler);
+        playerPickingTeam.getGameActionReceivedEvent().AttachHandler(responseHandler);
 
         try{
 
@@ -68,7 +68,7 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
         }finally {
             if(activePlayerResponse == null)
-                playerPickingTeam.getResponseReceivedEvent().DetachHandler(responseHandler);
+                playerPickingTeam.getGameActionReceivedEvent().DetachHandler(responseHandler);
         }
 
 
@@ -77,19 +77,19 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
     @Override
     public GamePhaseInfo getGamePhaseChangedInfo() {
-        return new GamePhaseInfo(GamePhaseType.PickTeam, responseTimeSeconds, playerCollection.getActivePlayer().getPlayerId(), null);
+        return new GamePhaseInfo(GamePhaseType.PickTeam, responseTimeSeconds, playerCollection.getActivePlayer().getPlayerId(), null, teamSize, null);
     }
 
-    private PlayerTeam CreateFromResponse(Response response) throws PhaseFailedException {
+    private PlayerTeam CreateFromResponse(GameAction response) throws PhaseFailedException {
         //response type mismatch
-        if(!(response instanceof PickTeamResponse))
+        if(!(response instanceof NominateTeamGameAction))
             throw new PhaseFailedException("response type mismatch");
 
-        PickTeamResponse pickResponse = (PickTeamResponse) response;
+        NominateTeamGameAction pickResponse = (NominateTeamGameAction) response;
 
-        HashSet<Integer> responseHashSet = new HashSet<Integer>(pickResponse.pickedPlayers);
+        HashSet<Integer> responseHashSet = new HashSet<Integer>(pickResponse.getNominatedPlayers());
 
-        if(pickResponse.pickedPlayers.size() != responseHashSet.size())
+        if(pickResponse.getNominatedPlayers().size() != responseHashSet.size())
             throw new PhaseFailedException("player identifiers not unique");
 
 

@@ -2,6 +2,7 @@ package game.gameBuilder;
 
 import authentication.User;
 import game.*;
+import game.communication.OutgoingGameCommunicationAPI;
 import game.dto.PlayerInfo;
 import lobby.gameroom.GameRoom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,13 @@ import java.util.stream.Collectors;
 public class GameBuilder {
     private final GamePhaseFactory gamePhaseFactory;
     private final GameRulesProvider gameRulesProvider;
+    private final OutgoingGameCommunicationAPI communicationAPI;
 
     @Autowired
-    public GameBuilder(GamePhaseFactory gamePhaseFactory, GameRulesProvider gameRulesProvider) {
+    public GameBuilder(GamePhaseFactory gamePhaseFactory, GameRulesProvider gameRulesProvider, OutgoingGameCommunicationAPI communicationAPI) {
         this.gamePhaseFactory = gamePhaseFactory;
         this.gameRulesProvider = gameRulesProvider;
+        this.communicationAPI = communicationAPI;
     }
 
     public Game Build(GameRoom gameRoom){
@@ -30,7 +33,7 @@ public class GameBuilder {
         Map<UUID, Player> gamePlayers = PopulatePlayerList(usersInGame, shuffledRoles);
 
         PlayerCollection gamePlayerCollection = new PlayerCollection(gamePlayers, 0);
-        ScoreTracker scoreTracker = new ScoreTracker(3, 5);
+        ScoreTracker scoreTracker = new ScoreTracker(3, 5, gamePlayerCollection, communicationAPI);
 
         AddIdentityInformation(gamePlayerCollection);
 

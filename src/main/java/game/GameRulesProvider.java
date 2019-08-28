@@ -23,7 +23,7 @@ public class GameRulesProvider {
     private int[] evilPlayersTable = {1,1,1,1,2,2,3,3,3,4};
 
     public Integer GetTeamSize(Integer round, Integer playersInGame){
-        return teamSizeTable[playersInGame][round];
+        return teamSizeTable[round][playersInGame];
     }
 
     public Integer GetEvilPlayersCount(Integer playersInGame){
@@ -39,7 +39,7 @@ public class GameRulesProvider {
                 if(playersInGame >= 7 && round == 4)
                     losesToFail++;
 
-                long loses =  voteResults.stream().filter(x -> x).count();
+                long loses =  voteResults.stream().filter(x -> !x).count();
 
                 return loses < losesToFail;
             }

@@ -3,12 +3,13 @@ package game.gamePhases;
 import common.EventHandler;
 import game.GamePhase;
 import game.Player;
+import game.PlayerCollection;
 import game.PlayerTeam;
-import game.communication.ClientGameCommunicationAPI;
+import game.communication.OutgoingGameCommunicationAPI;
+import game.dto.GameAction;
 import game.dto.GamePhaseInfo;
 import game.dto.GamePhaseType;
-import game.dto.responses.Response;
-import game.dto.responses.VoteResponse;
+import game.dto.VoteGameAction;
 import game.exceptions.PhaseFailedException;
 
 import java.util.List;
@@ -21,34 +22,36 @@ public class VotePhase implements GamePhase<Boolean> {
     private final Integer voteTimeSeconds;
     private final List<Player> votingPlayers;
     private final PlayerTeam votedTeam;
+    private final PlayerCollection playerCollection;
     private final GamePhaseType responseVoteType;
     private final VoteResultStrategy resultStrategy;
 
-    private final ClientGameCommunicationAPI clientGameCommunicationAPI;
+    private final OutgoingGameCommunicationAPI outgoingGameCommunicationAPI;
 
     private final Map<Integer, Boolean> teamVotes = new ConcurrentHashMap<>();
-    private final EventHandler<Response> responseEventHandler = new EventHandler<Response>() {
+    private final EventHandler<GameAction> responseEventHandler = new EventHandler<GameAction>() {
         @Override
-        public void Handle(Response params) {
-            if(!(params instanceof VoteResponse))
+        public void Handle(GameAction params) {
+            if(!(params instanceof VoteGameAction))
                 return;
 
-            VoteResponse request = (VoteResponse) params;
+            VoteGameAction request = (VoteGameAction) params;
 
-            if(request.voteType != responseVoteType)
+            if(request.getCurrentGamePhase() != responseVoteType)
                 return;
 
-            teamVotes.put(request.playerId, request.voteResult);
+            teamVotes.put(request.getPlayerId(), request.isVote());
         }
     };
 
-    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, GamePhaseType responseVoteType, VoteResultStrategy resultStrategy, ClientGameCommunicationAPI clientGameCommunicationAPI, PlayerTeam votedTeam) {
+    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, GamePhaseType responseVoteType, VoteResultStrategy resultStrategy, OutgoingGameCommunicationAPI outgoingGameCommunicationAPI, PlayerTeam votedTeam, PlayerCollection playerCollection) {
         this.voteTimeSeconds = voteTimeSeconds;
         this.votingPlayers = votingPlayers;
         this.responseVoteType = responseVoteType;
         this.resultStrategy = resultStrategy;
-        this.clientGameCommunicationAPI = clientGameCommunicationAPI;
+        this.outgoingGameCommunicationAPI = outgoingGameCommunicationAPI;
         this.votedTeam = votedTeam;
+        this.playerCollection = playerCollection;
     }
 
     @Override
@@ -56,10 +59,10 @@ public class VotePhase implements GamePhase<Boolean> {
 
         try{
             for(Player player : votingPlayers){
-                player.getResponseReceivedEvent().AttachHandler(responseEventHandler);
+                player.getGameActionReceivedEvent().AttachHandler(responseEventHandler);
             }
 
-            clientGameCommunicationAPI.AnnouncePhaseChanged(votingPlayers, getGamePhaseChangedInfo());
+            outgoingGameCommunicationAPI.AnnouncePhaseChanged(playerCollection.getPlayerList().values(), getGamePhaseChangedInfo());
 
             Long timeElapsed = 0L;
             boolean timedOut = false;
@@ -72,7 +75,7 @@ public class VotePhase implements GamePhase<Boolean> {
 
         }finally {
             for(Player player : votingPlayers){
-                player.getResponseReceivedEvent().DetachHandler(responseEventHandler);
+                player.getGameActionReceivedEvent().DetachHandler(responseEventHandler);
             }
         }
 
@@ -81,7 +84,7 @@ public class VotePhase implements GamePhase<Boolean> {
 
     @Override
     public GamePhaseInfo getGamePhaseChangedInfo() {
-        return new GamePhaseInfo(responseVoteType, voteTimeSeconds, votedTeam.getTeamCreator().getPlayerId(), votedTeam.getPlayersIds());
+        return new GamePhaseInfo(responseVoteType, voteTimeSeconds, votedTeam.getTeamCreator().getPlayerId(), votedTeam.getPlayersIds(), votedTeam.getPlayersIds().size(), null);
     }
 
     private Boolean isVoteFinished(){

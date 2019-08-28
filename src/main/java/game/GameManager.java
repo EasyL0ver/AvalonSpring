@@ -1,6 +1,7 @@
 package game;
 
 import game.dto.CompleteGameState;
+import game.exceptions.PhaseFailedException;
 import game.gameBuilder.GameBuilder;
 import lobby.gameroom.GameRoom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,14 @@ public class GameManager {
                 game.Start();
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } catch (PhaseFailedException e) {
+                e.printStackTrace();
             }
         }).start();
+    }
+
+    public Map<UUID, Game> getGameMap(){
+        return gameMap;
     }
 
     public CompleteGameState loadCompleteGameState(UUID playerApiKey, UUID gameRoomUUID) throws Exception {

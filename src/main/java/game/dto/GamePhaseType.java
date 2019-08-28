@@ -5,5 +5,6 @@ public enum GamePhaseType {
     , PickTeam
     , VoteTeam
     , Mission
-    , Cleanup
+    , EvilWonReveal
+    , GoodWonAssassination
 }
