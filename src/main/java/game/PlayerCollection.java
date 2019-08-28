@@ -33,6 +33,10 @@ public class PlayerCollection {
         activePlayerIndex = nextActive;
     }
 
+    public int GetPlayerCount(){
+        return playerList.values().size();
+    }
+
     public Player getActivePlayer(){
         return playerList.values().stream().filter(x -> x.getPlayerId().equals(activePlayerIndex)).collect(Collectors.toList()).get(0);
     }

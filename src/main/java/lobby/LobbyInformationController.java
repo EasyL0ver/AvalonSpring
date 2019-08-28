@@ -20,12 +20,6 @@ public class LobbyInformationController{
     private SimpMessagingTemplate simpMessagingTemplate;
     private GameLobby gameLobby;
 
-    @GetMapping("/lobby/all")
-    public Collection<GameAddedLobbyInfo> gameRoomList() {
-        List<GameAddedLobbyInfo> added = gameLobby.getLobbyGames().values().stream().map(this::Map).collect(Collectors.toList());
-        return added;
-    }
-
     @Autowired
     public LobbyInformationController(SimpMessagingTemplate simpMessagingTemplate, GameLobby gameLobby) {
         this.gameLobby = gameLobby;

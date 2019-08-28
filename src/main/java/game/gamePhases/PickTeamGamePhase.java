@@ -24,9 +24,7 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
     private final Player playerPickingTeam;
     private final PlayerCollection playerCollection;
-
     private final OutgoingGameCommunicationAPI communicationAPI;
-
     private final EventHandler<GameAction> responseHandler = new EventHandler<GameAction>() {
         @Override
         public void Handle(GameAction params) {

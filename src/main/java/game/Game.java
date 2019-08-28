@@ -1,24 +1,33 @@
 package game;
 
+import game.communication.OutgoingGameCommunicationAPI;
 import game.dto.GamePhaseInfo;
+import game.dto.MissionResult;
+import game.dto.TeamVoteResult;
 import game.dto.responses.ScoreBoard;
 import game.exceptions.GameOverException;
 import game.exceptions.PhaseFailedException;
 import game.gameBuilder.GamePhaseFactory;
+
+import java.util.Map;
 
 
 public class Game {
     private final PlayerCollection playerCollection;
     private final ScoreTracker scoreTracker;
     private final GamePhaseFactory gamePhaseFactory;
+    private final GameRulesProvider gameRulesProvider;
+    private final OutgoingGameCommunicationAPI communicationAPI;
 
     private Integer round = 0;
-    private GamePhase currentGamePhase;
+    private GamePhaseInfo currentGamePhase;
 
-    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GamePhaseFactory gamePhaseFactory) {
+    public Game(PlayerCollection playerCollection, ScoreTracker scoreTracker, GamePhaseFactory gamePhaseFactory, GameRulesProvider provider, OutgoingGameCommunicationAPI communicationAPI) {
         this.playerCollection = playerCollection;
         this.scoreTracker = scoreTracker;
         this.gamePhaseFactory = gamePhaseFactory;
+        this.gameRulesProvider = provider;
+        this.communicationAPI = communicationAPI;
     }
 
     public ScoreBoard getScore(){
@@ -26,10 +35,7 @@ public class Game {
     }
 
     public GamePhaseInfo getGamePhaseInfo(){
-        if(currentGamePhase == null)
-            return null;
-
-        return currentGamePhase.getGamePhaseChangedInfo();
+        return currentGamePhase;
     }
 
     public PlayerCollection getPlayerCollection(){
@@ -45,11 +51,16 @@ public class Game {
 
                 PlayerTeam playerTeam = chooseTeam();
 
-                GamePhase<Boolean> missionPhase = gamePhaseFactory.BuildMissionPhase(playerCollection, playerTeam, round);
+                GamePhase<Map<Integer, Boolean>> missionPhase = gamePhaseFactory.BuildMissionPhase(playerCollection, playerTeam);
 
-                currentGamePhase = missionPhase;
+                currentGamePhase = missionPhase.getGamePhaseChangedInfo();
 
-                if(missionPhase.resolve())
+                Map<Integer, Boolean> missionResult = missionPhase.resolve();
+                Boolean outcome = gameRulesProvider.getMissionVoteResultStrategy(round, playerCollection.GetPlayerCount()).resolveVoteResult(missionResult.values());
+
+                NotifyMissionResult(missionResult, outcome);
+
+                if(outcome)
                     scoreTracker.IncerementGood();
                 else
                     scoreTracker.IncrementEvil();
@@ -72,7 +83,7 @@ public class Game {
         while(proposedTeam == null){
             try{
                 GamePhase<PlayerTeam> pickTeamGamePhase = gamePhaseFactory.BuildPickingPhase(playerCollection, round);
-                currentGamePhase = pickTeamGamePhase;
+                currentGamePhase = pickTeamGamePhase.getGamePhaseChangedInfo();
                 proposedTeam = pickTeamGamePhase.resolve();
             }catch (PhaseFailedException e){
                 playerCollection.activePlayerMoveNext();
@@ -87,13 +98,14 @@ public class Game {
         PlayerTeam decidedTeam = null;
 
         while(decidedTeam == null){
-
             PlayerTeam proposedTeam = proposeTeam();
+            GamePhase<Map<Integer, Boolean>> voteOnTeamPhase = gamePhaseFactory.BuildVotePhase(playerCollection, proposedTeam);
+            currentGamePhase = voteOnTeamPhase.getGamePhaseChangedInfo();
+            Map<Integer, Boolean> outcome = voteOnTeamPhase.resolve();
 
-            GamePhase<Boolean> voteOnTeamPhase = gamePhaseFactory.BuildVotePhase(playerCollection, proposedTeam);
+            NotifyVoteResult(outcome);
 
-            currentGamePhase = voteOnTeamPhase;
-            if(voteOnTeamPhase.resolve())
+            if(gameRulesProvider.getTeamVoteResultStrategy().resolveVoteResult(outcome.values()))
                 decidedTeam = proposedTeam;
             else{
                 scoreTracker.ReportFailure();
@@ -101,5 +113,21 @@ public class Game {
             }
         }
         return decidedTeam;
+    }
+
+    private void NotifyMissionResult(Map<Integer, Boolean> result, Boolean outcome){
+        MissionResult missionResult = new MissionResult();
+        missionResult.outcome = outcome;
+        missionResult.fails = (int) result.values().stream().filter(p -> !p).count();
+        missionResult.successes = (int) result.values().stream().filter(p -> p).count();
+
+        communicationAPI.NotifyMissionResult(playerCollection.getPlayerList().values(), missionResult);
+    }
+
+    private void NotifyVoteResult(Map<Integer, Boolean> result){
+        TeamVoteResult teamVoteResult = new TeamVoteResult();
+        teamVoteResult.voteResults = result;
+
+        communicationAPI.NotifyTeamVoteResult(playerCollection.getPlayerList().values(), teamVoteResult);
     }
 }

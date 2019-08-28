@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class MyUserService implements UserService {
@@ -37,12 +38,15 @@ public class MyUserService implements UserService {
 
             authenticationService.Authenticate(login);
 
-            thisUser = userFactory.Build(login);
+            thisUser = findLoggedInUser(login.getUsername());
 
-            activeUsers.put(thisUser.getUserApiKey(), thisUser);
+            if(thisUser == null){
+                thisUser = userFactory.Build(login);
+                activeUsers.put(thisUser.getUserApiKey(), thisUser);
+            }
 
         }catch (Exception e){
-            //todo exception handling
+            e.printStackTrace();
             throw e;
         }
 
@@ -61,5 +65,14 @@ public class MyUserService implements UserService {
     @Override
     public Map<UUID, User> getActiveUsers() {
         return Collections.unmodifiableMap(activeUsers);
+    }
+
+    private User findLoggedInUser(String username){
+        List<User> usersWithThisUsername = activeUsers.values().stream().filter(x -> x.getUserName().equals(username)).collect(Collectors.toList());
+
+        if(usersWithThisUsername.size() == 1)
+            return usersWithThisUsername.get(0);
+
+        return null;
     }
 }

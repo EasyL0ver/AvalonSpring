@@ -3,42 +3,12 @@ var apiKey = null;
 var gameUUID = null;
 var viewModel = null;
 
-
-
-var HttpClient = function() {
-    this.get = function(aUrl, aCallback) {
-        var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function() {
-            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-                aCallback(anHttpRequest.responseText);
-        };
-
-        anHttpRequest.open( "GET", aUrl, true );
-        anHttpRequest.send( null );
-    }
-};
-
 function disconnect() {
     if (stompClient !== null) {
         stompClient.disconnect();
     }
     console.log("Disconnected");
 }
-
-var Initialize = function initialize() {
-    var client = new HttpClient();
-    //todo relative url
-    //todo pass api key in body
-    client.get('http://localhost:9090/game/state?gameUUID=' + gameUUID + '&apiKey=' + apiKey, function (response) {
-        console.log("response");
-        console.log(response);
-
-        viewModel = JSON.parse(response);
-        console.log(viewModel);
-
-        stomp_connect();
-    });
-};
 
 function stomp_connect() {
     var socket = new SockJS('/gs-guide-websocket');
@@ -49,6 +19,8 @@ function stomp_connect() {
         var phaseChangedEventUrl = "/topic/game/user-specific/" + apiKey + "/phase-changed";
         var scoreChangedEventUrl = "/topic/game/user-specific/" + apiKey + "/score-changed";
         var gameEndedEventUrl = "/topic/game/user-specific/" + apiKey + "/game-ended";
+        var voteResultEventUrl = "/topic/game/user-specific/" + apiKey + "/vote-result";
+        var missionResultEventUrl = "/topic/game/user-specific/" + apiKey + "/mission-result";
 
         stompClient.subscribe(phaseChangedEventUrl, function (addedInfo) {
             viewModel.gamePhaseInfo = JSON.parse(addedInfo.body);
@@ -87,6 +59,16 @@ function stomp_connect() {
             viewModel.scoreBoard = JSON.parse(addedInfo.body);
             console.log(viewModel);
         });
+
+        stompClient.subscribe(voteResultEventUrl, function (addedInfo) {
+            viewModel.scoreBoard = JSON.parse(addedInfo.body);
+            console.log(viewModel);
+        });
+
+        stompClient.subscribe(missionResultEventUrl, function (addedInfo) {
+            viewModel.scoreBoard = JSON.parse(addedInfo.body);
+            console.log(viewModel);
+        })
     })}
 
 function nominateTeam(nominatedPlayersIds){

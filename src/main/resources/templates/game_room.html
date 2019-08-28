@@ -22,12 +22,12 @@
 
         </tbody>
     </table>
-    <form action="/lobby/room/start_game" method="post">
+    <form action="room/start-game" method="post">
         <input type="hidden" name="userApiKey" th:value="${api_key}">
         <input type="hidden" name="gameUUID" th:value="${room_uuid}">
         <input value="start" type="submit"/>
     </form><br>
-    <form action="/lobby/room/abort" method="post">
+    <form action="room/abort" method="post">
         <input type="hidden" name="userApiKey" th:value="${api_key}">
         <input type="hidden" name="gameUUID" th:value="${room_uuid}">
         <input value="abort" type="submit"/>
@@ -35,7 +35,9 @@
 <script th:inline="javascript">
     var apk = /*[[${api_key}]]*/ 'default';
     var roomId = /*[[${room_uuid}]]*/ 'default';
-    Initialize(roomId)
+    usersInGame = /*[[${users}]]*/ 'default';
+    updateGamesView();
+    stomp_connect(roomId);
 </script>
 </body>
 </html>

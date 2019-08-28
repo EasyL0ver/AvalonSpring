@@ -16,16 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class VotePhase implements GamePhase<Boolean> {
+public class VotePhase implements GamePhase<Map<Integer, Boolean>> {
     private final Integer pollTimeMilliseconds = 500;
-
     private final Integer voteTimeSeconds;
     private final List<Player> votingPlayers;
     private final PlayerTeam votedTeam;
     private final PlayerCollection playerCollection;
     private final GamePhaseType responseVoteType;
-    private final VoteResultStrategy resultStrategy;
-
     private final OutgoingGameCommunicationAPI outgoingGameCommunicationAPI;
 
     private final Map<Integer, Boolean> teamVotes = new ConcurrentHashMap<>();
@@ -44,18 +41,17 @@ public class VotePhase implements GamePhase<Boolean> {
         }
     };
 
-    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, GamePhaseType responseVoteType, VoteResultStrategy resultStrategy, OutgoingGameCommunicationAPI outgoingGameCommunicationAPI, PlayerTeam votedTeam, PlayerCollection playerCollection) {
+    public VotePhase(Integer voteTimeSeconds, List<Player> votingPlayers, GamePhaseType responseVoteType, OutgoingGameCommunicationAPI outgoingGameCommunicationAPI, PlayerTeam votedTeam, PlayerCollection playerCollection) {
         this.voteTimeSeconds = voteTimeSeconds;
         this.votingPlayers = votingPlayers;
         this.responseVoteType = responseVoteType;
-        this.resultStrategy = resultStrategy;
         this.outgoingGameCommunicationAPI = outgoingGameCommunicationAPI;
         this.votedTeam = votedTeam;
         this.playerCollection = playerCollection;
     }
 
     @Override
-    public Boolean resolve() throws PhaseFailedException, InterruptedException {
+    public Map<Integer, Boolean> resolve() throws PhaseFailedException, InterruptedException {
 
         try{
             for(Player player : votingPlayers){
@@ -79,7 +75,8 @@ public class VotePhase implements GamePhase<Boolean> {
             }
         }
 
-        return resultStrategy.resolveVoteResult(teamVotes.values());
+
+        return teamVotes;
     }
 
     @Override
@@ -90,5 +87,4 @@ public class VotePhase implements GamePhase<Boolean> {
     private Boolean isVoteFinished(){
         return teamVotes.size() == votingPlayers.size();
     }
-
 }

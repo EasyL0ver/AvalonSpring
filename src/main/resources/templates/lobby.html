@@ -10,7 +10,7 @@
 </head>
 <body onbeforeunload="return disconnect()">
 WITAMY W LOBBY<br><br>
-<form action="/lobby/create_game" method="post">
+<form action="/lobby/create-game" method="post">
     <input type="text" name="gameRoomName">
     <input type="hidden" name="userApiKey" th:value="${api_key}">
     <input type="submit" value="Create game"/>
@@ -29,9 +29,10 @@ WITAMY W LOBBY<br><br>
     var apk = /*[[${api_key}]]*/ 'default';
     console.log(apk);
 
-    Initialize(apk)
+    lobbyGames = /*[[${games}]]*/ 'default';
 
-
+    updateGamesView();
+    stomp_connect();
 </script>
 </body>
 </html>

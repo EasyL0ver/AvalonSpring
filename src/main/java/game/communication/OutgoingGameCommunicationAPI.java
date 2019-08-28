@@ -2,6 +2,8 @@ package game.communication;
 
 import game.Player;
 import game.dto.GamePhaseInfo;
+import game.dto.MissionResult;
+import game.dto.TeamVoteResult;
 import game.dto.responses.ScoreBoard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,4 +35,16 @@ public class OutgoingGameCommunicationAPI {
         for(Player player : players)
             simpMessagingTemplate.convertAndSend("/topic/game/user-specific/" + player.getUserUUID() + "/game-ended", result);
     }
+
+    public void NotifyTeamVoteResult(Collection<Player> players, TeamVoteResult result){
+        for(Player player : players)
+            simpMessagingTemplate.convertAndSend("/topic/game/user-specific/" + player.getUserUUID() + "/vote-result", result);
+    }
+
+    public void NotifyMissionResult(Collection<Player> players, MissionResult result){
+        for(Player player : players)
+            simpMessagingTemplate.convertAndSend("/topic/game/user-specific/" + player.getUserUUID() + "/mission-result", result);
+    }
+
+
 }

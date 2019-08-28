@@ -37,7 +37,7 @@ public class GameBuilder {
 
         AddIdentityInformation(gamePlayerCollection);
 
-        return new Game(gamePlayerCollection, scoreTracker, gamePhaseFactory);
+        return new Game(gamePlayerCollection, scoreTracker, gamePhaseFactory, gameRulesProvider, communicationAPI);
     }
 
     private Map<UUID, Player> PopulatePlayerList(List<User> usersInGame, List<AvalonRole> shuffledRoles) {

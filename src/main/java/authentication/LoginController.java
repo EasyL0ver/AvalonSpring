@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.util.TextUtils;
 
 import javax.naming.Binding;
@@ -27,7 +28,8 @@ public class LoginController {
             , HttpServletResponse response
             , @ModelAttribute("login") Login login
             , BindingResult result
-            , Model model) throws Exception {
+            , Model model
+            , RedirectAttributes redirectAttributes) throws Exception {
 
         User user = null;
         try {
@@ -35,16 +37,10 @@ public class LoginController {
             user = userService.authorize(login);
         }
         catch(Exception e) {
-            //todo better exception handling
-            //todo add thymeleaf login failed reason
             model.addAttribute("failed_reason", e.getMessage());
             return "login";
-            //response.sendRedirect("/");
         }
 
-
-        model.addAttribute("api_key", user.getUserApiKey());
-
-        return "lobby";
+        return "redirect:lobby?apiKey=" + user.getUserApiKey();
     }
 }

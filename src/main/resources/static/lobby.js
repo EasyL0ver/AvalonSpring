@@ -1,39 +1,9 @@
 var stompClient = null;
 var lobbyGames = [];
-var HttpClient = function() {
-    this.get = function(aUrl, aCallback) {
-        var anHttpRequest = new XMLHttpRequest();
-        anHttpRequest.onreadystatechange = function() {
-            if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
-                aCallback(anHttpRequest.responseText);
-        };
-
-        anHttpRequest.open( "GET", aUrl, true );
-        anHttpRequest.send( null );
-    }
-};
-var Initialize = function initialize(api_key) {
-    var client = new HttpClient();
-    //todo relative path
-    client.get('http://localhost:9090/lobby/all', function (response) {
-        console.log("response");
-        console.log(response);
-
-        var responses = JSON.parse(response);
-        responses.forEach(function (response) {
-            lobbyGames.push(response)
-        });
-
-        console.log(lobbyGames)
-
-        updateGamesView();
-        stomp_connect(api_key)
-    });
-};
 
 function createJoinGameForm(lobbyGame){
     var joinGameForm = document.createElement("form");
-    joinGameForm.action = "/lobby/join_game";
+    joinGameForm.action = "/lobby/join-game";
     joinGameForm.method = "POST";
 
     var buttonInput = document.createElement("input");
@@ -128,24 +98,6 @@ function stomp_connect() {
         stompClient.subscribe('/topic/lobby/removed', function (removedInfo) {
             onGameRemoved(JSON.parse(removedInfo.body))
         });
-    });
+    })};
 
-function initialize(api_key) {
-    var client = new HttpClient();
-    client.get('http://localhost:9090/lobby/all', function (response) {
-        console.log("response");
-        console.log(response);
-
-        var responses = JSON.parse(response);
-
-        responses.forEach(function (response) {
-            lobbyGames.push(response);
-        });
-
-        console.log(lobbyGames);
-
-        updateGamesView();
-        stomp_connect(api_key);
-    });
-}}
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class GamePhaseFactory {
@@ -23,17 +24,13 @@ public class GamePhaseFactory {
         this.outgoingGameCommunicationAPI = outgoingGameCommunicationAPI;
     }
 
-    public GamePhase<Boolean> BuildVotePhase(PlayerCollection playerCollection, PlayerTeam playerTeam){
+    public GamePhase<Map<Integer, Boolean>> BuildVotePhase(PlayerCollection playerCollection, PlayerTeam playerTeam){
         List<Player> allPlayers = playerTeam.getPlayers();
-        VoteResultStrategy resultStrategy = gameRulesProvider.getTeamVoteResultStrategy();
-
-        return new VotePhase(120, allPlayers, GamePhaseType.VoteTeam, resultStrategy, outgoingGameCommunicationAPI, playerTeam, playerCollection);
+        return new VotePhase(120, allPlayers, GamePhaseType.VoteTeam, outgoingGameCommunicationAPI, playerTeam, playerCollection);
     }
 
-    public GamePhase<Boolean> BuildMissionPhase(PlayerCollection playerCollection, PlayerTeam playerTeam, Integer round){
-        int playerCount = playerCollection.getPlayerList().size();
-        VoteResultStrategy resultStrategy = gameRulesProvider.getMissionVoteResultStrategy(round, playerCount);
-        return new VotePhase(120, playerTeam.getPlayers(), GamePhaseType.Mission, resultStrategy, outgoingGameCommunicationAPI, playerTeam, playerCollection);
+    public GamePhase<Map<Integer, Boolean>> BuildMissionPhase(PlayerCollection playerCollection, PlayerTeam playerTeam){
+        return new VotePhase(120, playerTeam.getPlayers(), GamePhaseType.Mission, outgoingGameCommunicationAPI, playerTeam, playerCollection);
     }
 
     public GamePhase<PlayerTeam> BuildPickingPhase(PlayerCollection playerCollection, Integer round){

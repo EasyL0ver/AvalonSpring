@@ -22,6 +22,7 @@ public class GameRulesProvider {
 
     private int[] evilPlayersTable = {1,1,1,1,2,2,3,3,3,4};
 
+
     public Integer GetTeamSize(Integer round, Integer playersInGame){
         return teamSizeTable[round][playersInGame];
     }
@@ -53,10 +54,10 @@ public class GameRulesProvider {
                 long loses =  voteResults.stream().filter(x -> x).count();
                 long wins = voteResults.size() - loses;
 
+
                 return loses > wins;
             }
         };
     }
-
 
 }

@@ -13,7 +13,10 @@
 <script th:inline="javascript">
     apiKey = /*[[${api_key}]]*/ 'default';
     gameUUID = /*[[${room_uuid}]]*/ 'default';
-    Initialize()
+    viewModel = /*[[${state}]]*/ 'default';
+
+    console.log(viewModel)
+    stomp_connect()
 </script>
 </body>
 </html>
