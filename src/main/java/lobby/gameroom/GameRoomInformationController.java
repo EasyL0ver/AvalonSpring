@@ -44,6 +44,21 @@ public class GameRoomInformationController {
                 });
             }
         });
+
+
+        gameLobby.getGameStartedEvent().AttachHandler(new EventHandler<GameRoom>() {
+            @Override
+            public void Handle(GameRoom params) {
+                User host = params.getHost();
+                List<User> nonHostUsers = params.getUsersInGame().stream().filter(u -> u != host).collect(Collectors.toList());
+                for(User user : nonHostUsers){
+                    simpMessagingTemplate.convertAndSend("/topic/lobby/room/" + params.getGameRoomUUID() + "/started/" + user.getUserApiKey(), "started");
+
+                }
+
+
+            }
+        });
     }
 
     @GetMapping("lobby/room/all")

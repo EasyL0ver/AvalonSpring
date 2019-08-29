@@ -42,7 +42,8 @@ function stomp_connect(roomUUID) {
         console.log('Connected: ' + frame);
 
         var playerListRefreshedUrl = "/topic/lobby/room/" + roomUUID + "/users";
-        var gameAbortedUrl = "/topic/lobby/room/" + roomUUID + "/abort"
+        var gameAbortedUrl = "/topic/lobby/room/" + roomUUID + "/abort";
+        var gameStartedUrl = "/topic/lobby/room/" + roomUUID + "/started/" + apk;
 
         console.log(playerListRefreshedUrl)
         console.log(gameAbortedUrl)
@@ -55,6 +56,9 @@ function stomp_connect(roomUUID) {
             updateGamesView();
         });
         stompClient.subscribe(gameAbortedUrl, function (removedInfo) {
+            console.log(removedInfo);
+        });
+        stompClient.subscribe(gameStartedUrl, function (removedInfo) {
             console.log(removedInfo);
         });
     });
