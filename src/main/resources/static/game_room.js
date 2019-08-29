@@ -1,31 +1,21 @@
 var stompClient = null;
 var usersInGame = [];
 
-function createLobbyTable(usersInGame){
-    var new_table_body = document.createElement("tbody");
-    new_table_body.id = "greetings";
-
-    usersInGame.forEach(function(lobbyGame){
-        var row = document.createElement("tr");
-        var name_cell = document.createElement("td");
-        name_cell.innerHTML = lobbyGame;
-
-        row.appendChild(name_cell);
-
-        new_table_body.appendChild(row)
-    });
-
-    return new_table_body
-}
-
 function updateGamesView() {
+    console.log(usersInGame);
 
-    var new_table_body = createLobbyTable(usersInGame)
-    var tableBody = document.getElementById("greetings")
-    var parentNode = tableBody.parentNode
+    $(".players-list").empty();
+    usersInGame.forEach(function (value) {
+        console.log(value);
 
-    console.log(new_table_body)
-    parentNode.replaceChild(new_table_body, tableBody)
+        var htmlElement = '<li>' +
+                              '<span class="p-name">' + value + '</span>' +
+                                  '<span class="p-winrate"> 50% </span>' +
+                              '</span>' +
+                          '</li>';
+
+        $(".players-list").append(htmlElement)
+    })
 }
 
 function disconnect() {
@@ -45,8 +35,8 @@ function stomp_connect(roomUUID) {
         var gameAbortedUrl = "/topic/lobby/room/" + roomUUID + "/abort";
         var gameStartedUrl = "/topic/lobby/room/" + roomUUID + "/started/" + apk;
 
-        console.log(playerListRefreshedUrl)
-        console.log(gameAbortedUrl)
+        console.log(playerListRefreshedUrl);
+        console.log(gameAbortedUrl);
 
         stompClient.subscribe(playerListRefreshedUrl, function (playerList) {
             console.log("updated");
@@ -56,10 +46,12 @@ function stomp_connect(roomUUID) {
             updateGamesView();
         });
         stompClient.subscribe(gameAbortedUrl, function (removedInfo) {
-            console.log(removedInfo);
+            var redirectBackToLobbyURL = window.location.origin + '/lobby?apiKey=' + apk;
+            window.location.replace(redirectBackToLobbyURL);
         });
         stompClient.subscribe(gameStartedUrl, function (removedInfo) {
-            console.log(removedInfo);
+            var startGameRedirectURL = window.location.origin + '/game?apiKey=' + apk + '&gameUUID=' + roomUUID;
+            window.location.replace(startGameRedirectURL);
         });
     });
 }

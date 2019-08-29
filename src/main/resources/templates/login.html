@@ -1,29 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <title>Avalon</title>
-    <link href="styles.css" rel="stylesheet">
-</head>
-<body>
-<div >
-    <form action="login" method="post">
-        <div class="imgcontainer" style="text-align: center;">
-            <img src="placeholder%20logo.jpg" alt="Avatar" class="avatar">
+<html lang="en">
+    <head>
+        <title>Login | AVALON</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <div class="center">
+                <div class="row">
+                    <div class="logo">
+                        <img src="avalon.png" alt="logo">
+                    </div>    
+                </div>
+                <div class="row">
+                    <form class="login-form" action="login" method="post">
+                        <input type="text" name="username" placeholder="Wpisz swój login"><br>
+                        <input type="password" name="password" placeholder="Podaj hasło"><br>
+                        <input type="submit" value="Zaloguj">
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="log-form" >
-            <label for="uname"><b>Username</b></label>
-            <input type="text" placeholder="Enter Username" name="username" required><br>
-
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="password" required><br>
-
-            <button type="submit">Login</button>
-            <p th:text="${failed_reason}" />
-        </div>
-
-    </form>
-</div>
-</body>
+    </body>
 </html>

@@ -1,37 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
+    <title>Game room | AVALON</title>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/style.css" rel="stylesheet">
     <script src="/game_room.js"></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 </head>
-<body onbeforeunload="return disconnect()">
-    Witam cb w game room<br>
-    <p th:text="'Hosted by ' + ${host_name} + '!'" />
-    <p th:text="'Room name: ' + ${room_name} + '!'" /><br>
-    <table id="activeGames">
-        <thead>
-        <tr>
-            <th>Active Games</th>
-        </tr>
-        </thead>
-        <tbody id="greetings">
+<body class="host" onbeforeunload="return disconnect()">
+<div class="container">
+    <div class="center">
+        <div class="row game-title">
+            <h1 id="game-name">
+                <p th:text="'Drużyna: ' + ${host_name}" />
+            </h1>
+            <p th:text="'Nazwa gry: ' + ${room_name}" />
+        </div>
+        <div class="row start-game">
+            <form action="room/start-game" method="post">
+                <input type="hidden" name="userApiKey" th:value="${api_key}">
+                <input type="hidden" name="gameUUID" th:value="${room_uuid}">
+                <button id="start_game_btn" >Rozpocznij grę</button>
+            </form>
+            <form action="room/abort" method="post">
+                <input type="hidden" name="userApiKey" th:value="${api_key}">
+                <input type="hidden" name="gameUUID" th:value="${room_uuid}">
+                <button id="abort_game_btn">Wyjdź z gry</button>
+            </form><br>
+        </div>
+        <div class="row">
+            <h2>
+                LISTA GRACZY
+            </h2>
+        </div>
+        <div class="row">
+            <ul class="players-list">
 
-        </tbody>
-    </table>
-    <form action="room/start-game" method="post">
-        <input type="hidden" name="userApiKey" th:value="${api_key}">
-        <input type="hidden" name="gameUUID" th:value="${room_uuid}">
-        <input value="start" type="submit"/>
-    </form><br>
-    <form action="room/abort" method="post">
-        <input type="hidden" name="userApiKey" th:value="${api_key}">
-        <input type="hidden" name="gameUUID" th:value="${room_uuid}">
-        <input value="abort" type="submit"/>
-    </form><br>
+            </ul>
+        </div>
+
+    </div>
+</div>
 <script th:inline="javascript">
     var apk = /*[[${api_key}]]*/ 'default';
     var roomId = /*[[${room_uuid}]]*/ 'default';

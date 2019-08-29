@@ -3,6 +3,7 @@ var apiKey = null;
 var gameUUID = null;
 var viewModel = null;
 
+
 function disconnect() {
     if (stompClient !== null) {
         stompClient.disconnect();

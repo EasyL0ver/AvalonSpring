@@ -1,0 +1,185 @@
+@import url('./normalize.css');
+
+body{
+    width: 100vw;
+    height: 100vh;
+}
+body > .container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto;
+    padding: 15px;
+    box-sizing: border-box;
+
+    background: url(background.jpg);
+}
+body > .container .row {
+    display: block;
+    width: 100%;
+    position: relative;
+}
+
+.container > .center{
+    position: relative;
+    display: block;
+    height: auto;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+
+/**
+* LOGIN
+*/
+.logo {
+    width: 100%;
+    margin-bottom: 50px;
+}
+.logo img{
+    width: 100%;
+}
+
+
+form.login-form {
+    text-align: center;
+}
+input,
+.create-game button{
+    margin-bottom: 15px;
+    padding: 10px 15px;
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 250px;
+}
+
+
+
+
+/**
+* LOBBY
+*/
+h1 {
+    font-size: 3em;
+    text-align: center;
+    color: white;
+    text-shadow: 3px -2px 3px black;
+    margin-top: 0px;
+}
+h2 {
+    font-size: 1.4em;
+    text-align: center;
+    color: white;
+    text-shadow: 3px -2px 3px black;
+}
+
+.create-game,
+.create-game input{
+    text-align: center;
+}
+ul.gamelist {
+    list-style: none;
+    background: white;
+    border: 3px solid black;
+    border-radius: 6px;
+    padding-inline-start: 0px;
+    padding: 15px 0px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    height: auto;
+    max-height: 175px;
+}
+ul.gamelist li {
+    font-size: 16px;
+    line-height: 28px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+ul.gamelist li:nth-child(even) {
+    background: #bfbfbf;
+}
+span.g-players-count-element {
+    color: blue;
+}
+span.g-players-count{
+    color: #ec2424;
+}
+button.g-join-btn {
+    float: right;
+    width: 60px;
+    height: 24px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding: 4px;
+    line-height: 12px;
+}
+
+
+
+
+
+/**
+* GAME ROOM
+*/
+
+.game-title h1#game-name, .game-title p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+.game-title p {
+    margin-top: -5px;
+    margin-bottom: 45px;
+    color: white;
+    text-align: center;
+}
+
+#start_game_btn{
+    opacity: 0.5;
+    pointer-events: none;
+}
+.host #start_game_btn{
+    opacity: 1;
+    pointer-events: all;
+}
+
+.start-game button{
+    width: 100%;
+    padding: 10px 5px;
+    margin-bottom: 15px;
+}
+
+
+ul.players-list {
+    list-style-type: decimal-leading-zero;
+    list-style-position: inside;
+    padding-inline-start: 0px;
+    background: white;
+    border: 3px solid black;
+    border-radius: 6px;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    height: auto;
+    max-height: 215px;
+    padding: 15px 0px;
+}
+
+ul.players-list li {
+    padding: 0px 15px;
+}
+
+ul.players-list li:nth-child(even) {
+    background: #b7b7b7;
+}
+
+
+
+
+
+
+
+
+

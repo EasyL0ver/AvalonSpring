@@ -1,63 +1,28 @@
 var stompClient = null;
 var lobbyGames = [];
-
-function createJoinGameForm(lobbyGame){
-    var joinGameForm = document.createElement("form");
-    joinGameForm.action = "/lobby/join-game";
-    joinGameForm.method = "POST";
-
-    var buttonInput = document.createElement("input");
-    buttonInput.type="submit";
-    buttonInput.value="Join";
-
-    var hiddenApiKeyInput = document.createElement("input");
-    hiddenApiKeyInput.type="hidden";
-    hiddenApiKeyInput.name="userApiKey";
-    hiddenApiKeyInput.value=apk;
-
-    var hiddenGameUUidInput = document.createElement("input");
-    hiddenGameUUidInput.type="hidden";
-    hiddenGameUUidInput.name="joinedGameUUID";
-    hiddenGameUUidInput.value=lobbyGame.gameUUID;
-
-    joinGameForm.appendChild(buttonInput);
-    joinGameForm.appendChild(hiddenGameUUidInput);
-    joinGameForm.appendChild(hiddenApiKeyInput);
-
-    return joinGameForm;
-}
-
-function createLobbyTable(lobbyGames){
-    var new_table_body = document.createElement("tbody");
-    new_table_body.id = "greetings";
-
-    lobbyGames.forEach(function(lobbyGame){
-        var row = document.createElement("tr");
-        var name_cell = document.createElement("td");
-        name_cell.innerHTML = lobbyGame.roomName;
-
-        var other_cell = document.createElement("td");
-        other_cell.appendChild(createJoinGameForm(lobbyGame));
-
-        row.appendChild(name_cell);
-        row.appendChild(other_cell);
-
-        new_table_body.appendChild(row)
-    });
-
-    return new_table_body
-}
+var apk = null;
 
 function updateGamesView() {
     console.log(lobbyGames);
-    console.log($("#greetings"));
 
-    var new_table_body = createLobbyTable(lobbyGames)
-    var tableBody = document.getElementById("greetings")
-    var parentNode = tableBody.parentNode
+    $(".gamelist").empty();
+    lobbyGames.forEach(function (value) {
+        console.log(value);
 
-    console.log(new_table_body)
-    parentNode.replaceChild(new_table_body, tableBody)
+        var htmlElement = "<li>" +
+                            "<span class=\"g-name\">" + value.roomName + "</span>" +
+                            "<span class=\"g-players-count-element\">" +
+                                "(<span class=\"g-players-count\">" + value.playerCount + "</span>/10)" +
+                            "</span>" +
+                            '<form action=/lobby/join-game method=post>' +
+                                '<button class=g-join-btn> Dołącz </button>' +
+                                '<input type="hidden" name="userApiKey" value=' + apk + '>' +
+                                '<input type="hidden" name="joinedGameUUID" value=' + value.gameUUID + '>' +
+                            "</form>" +
+                          "</li>";
+
+        $(".gamelist").append(htmlElement)
+    })
 }
 
 function disconnect() {

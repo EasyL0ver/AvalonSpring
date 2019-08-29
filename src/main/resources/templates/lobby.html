@@ -1,38 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Avalon: lobby</title>
-    <script src="/lobby.js"></script>
-    <script src="/webjars/jquery/jquery.min.js"></script>
-    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-</head>
-<body onbeforeunload="return disconnect()">
-WITAMY W LOBBY<br><br>
-<form action="/lobby/create-game" method="post">
-    <input type="text" name="gameRoomName">
-    <input type="hidden" name="userApiKey" th:value="${api_key}">
-    <input type="submit" value="Create game"/>
-</form><br><br>
-<table id="activeGames">
-    <thead>
-    <tr>
-        <th>Active Games</th>
-    </tr>
-    </thead>
-    <tbody id="greetings">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>LOBBY | AVALON</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="/style.css" rel="stylesheet">
+        <script src="/lobby.js"></script>
+        <script src="/webjars/jquery/jquery.min.js"></script>
+        <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+        <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    </head>
+    <body onbeforeunload="return disconnect()">
+        <div class="container">
+            <div class="center">
+            <div class="row">
+                <h1>
+                    WITAMY W LOBBY
+                </h1>
+            </div>
+            <div class="row">
+                <h2>
+                    AKTYWNE GRY
+                </h2>
+            </div>
+            <div class="row">
+                <ul class="gamelist">
 
-    </tbody>
-</table>
-<script th:inline="javascript">
-    var apk = /*[[${api_key}]]*/ 'default';
-    console.log(apk);
+                </ul>
+            </div>
+            <div class="row">
+                <h2>
+                    UTWÓRZ GRĘ
+                </h2>
+            </div>
+            <div class="row create-game">
+                <form action="/lobby/create-game" method="post">
+                    <input id="game_title" type="text" name="gameRoomName" placeholder="Podaj nazwę tworzonej gry"><br>
+                    <input type="hidden" name="userApiKey" th:value="${api_key}">
+                    <input type="submit" value="Stwórz grę"/>
+                </form>
+            </div>
+        </div>
+        </div>
+        <script th:inline="javascript">
+            apk = /*[[${api_key}]]*/ 'default';
+            console.log(apk);
 
-    lobbyGames = /*[[${games}]]*/ 'default';
+            lobbyGames = /*[[${games}]]*/ 'default';
 
-    updateGamesView();
-    stomp_connect();
-</script>
-</body>
+            updateGamesView();
+            stomp_connect();
+        </script>
+    </body>
 </html>
