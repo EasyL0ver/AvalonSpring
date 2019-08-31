@@ -108,3 +108,4 @@ function assasinate(playerId){
 
     stompClient.send("/app/game/action/assassinate", {}, JSON.stringify(payload));
 }
+

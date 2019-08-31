@@ -175,11 +175,185 @@ ul.players-list li:nth-child(even) {
     background: #b7b7b7;
 }
 
+/**
+* GAME
+*/
+.horizontal-scrollable {
+    position: relative;
+}
+.player {
+    display: inline-block;
+    color: white;
+    padding: 5px;
+    margin: 5px;
+    text-decoration: none;
+    background: black;
+    width: 20%;
+    position: relative;
+    border-radius: 13px;
+    text-align: left;
+    border: 2px solid white;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.player.active {
+    border: 2px solid black;
+    box-shadow: 0 0 20px 5px white;
+}
+.player .nickname {
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+}
+.row .col-4 {
+    width: 33.33333%;
+    position: relative;
+    float: left;
+    display: inline-block;
+}
+.row .col-8 {
+    width: 66.66666%;
+    position: relative;
+    display: inline-block;
+    float: left;
+}
+span.mission-number {
+    background: white;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    display: block;
+    text-align: center;
+    line-height: 100px;
+    font-size: 70px;
+    margin: 0 auto;
+    color: black;
+}
+span.won-for-good,
+span.won-for-bad {
+    width: 100%;
+    display: block;
+    line-height: 18px;
+    font-size: 18px;
+    color: white;
+    padding: 10px;
+}
+div#currentMission:after {
+    content: ' ';
+    clear: both;
+    display: table;
+}
+#currentMission .mission-name {
+    width: 100%;
+    color: black;
+    text-align: center;
+    margin-top: -25px;
+}
+div#currentMission {
+    margin-top: 75px;
+}
 
 
+div#gameInfo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+div#voting {
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    color: white;
+    font-size: 18px;
+}
+div#timer {
+    position: absolute;
+    right: 15px;
+    top: 36px;
+    color: white;
+    font-size: 22px;
+}
+.console {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    font-size: 18px;
+    line-height: 18px;
+    text-align: center;
+    color: black;
+    background: white;
+    min-height: 18px;
+    max-height: 36px;
+    height: auto;
+}
 
 
+div#playersList {
+    margin-top: 25px;
+}
 
 
+/**
+* Game phases
+*/
+
+#decisions{
+    position: relative;
+    margin: 15px auto;
+}
+div#decisions button {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+#decisions .cards-pair{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#decisions img {
+    position: relative;
+    width: 45%;
+    display: inline-block;
+    transition: .5s all ease;
+}
+
+img#sukces,
+img#zgoda{
+    transform: translateX(-150%);
+}
+img#porazka,
+img#sprzeciw{
+    transform: translateX(150%);
+}
+
+#akcept{
+    display: none;
+}
 
 
+/**
+* WyÅ›wietl karty zgody/sprzeciwu
+*/
+body.phase-3 #akcept{
+    display: block;
+}
+body.phase-1 img#sukces,
+body.phase-1 img#porazka {
+    transform: translateX(0px);
+    display: inline-block;
+}
+body.phase-2 img#zgoda,
+body.phase-2 img#sprzeciw {
+    transform: translateX(0px);
+    display: inline-block;
+}

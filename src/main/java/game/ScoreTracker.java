@@ -39,7 +39,7 @@ public class ScoreTracker {
         communicationAPI.NotifyScoreChanged(playerCollection.getPlayerList().values(),getScoreBoard());
 
         if(evilScore.equals(pointsToWin))
-            throw new GameOverException(false, "evil otherPlayers got 3 points");
+            throw new GameOverException(false, "evil players got 3 points");
     }
 
     void incrementGood() throws GameOverException {
@@ -48,7 +48,7 @@ public class ScoreTracker {
         communicationAPI.NotifyScoreChanged(playerCollection.getPlayerList().values(),getScoreBoard());
 
         if(goodScore.equals(pointsToWin))
-            throw new GameOverException(true, "good otherPlayers got 3 points");
+            throw new GameOverException(true, "good players got 3 points");
     }
 
     void reportFailure() throws GameOverException {

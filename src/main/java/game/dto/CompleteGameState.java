@@ -8,7 +8,7 @@ import game.dto.notifications.ScoreBoard;
 import java.util.List;
 
 public class CompleteGameState {
-    public List<VisiblePlayer> otherPlayers;
+    public List<VisiblePlayer> players;
     public List<Integer> identityInfo;
     public AvalonRole role;
     public Integer myId;
