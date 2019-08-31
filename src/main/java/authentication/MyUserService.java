@@ -62,11 +62,6 @@ public class MyUserService implements UserService {
         return activeUsers.get(userApiKey);
     }
 
-    @Override
-    public Map<UUID, User> getActiveUsers() {
-        return Collections.unmodifiableMap(activeUsers);
-    }
-
     private User findLoggedInUser(String username){
         List<User> usersWithThisUsername = activeUsers.values().stream().filter(x -> x.getUserName().equals(username)).collect(Collectors.toList());
 

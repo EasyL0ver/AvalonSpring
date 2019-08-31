@@ -7,16 +7,19 @@ import game.Player;
 import game.PlayerCollection;
 import game.PlayerTeam;
 import game.communication.OutgoingGameCommunicationAPI;
-import game.dto.GameAction;
-import game.dto.GamePhaseInfo;
+import game.dto.gameActions.GameAction;
+import game.dto.notifications.GamePhaseInfo;
 import game.dto.GamePhaseType;
-import game.dto.NominateTeamGameAction;
+import game.dto.gameActions.NominateTeamGameAction;
 import game.exceptions.PhaseFailedException;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Game phase during of which active player proposes a team for a current mission
+ */
 public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
     private final Integer teamSize;
     private final Integer responseTimeSeconds;
@@ -36,6 +39,13 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
 
     private GameAction activePlayerResponse = null;
 
+    /**
+     * @param playerPickingTeam player that is supposed to pick the team
+     * @param playerCollection every player in game
+     * @param teamSize team size to pick by active player
+     * @param responseTimeSeconds time for a decision for active player
+     * @param communicationAPI communication api
+     */
     public PickTeamGamePhase(Player playerPickingTeam, PlayerCollection playerCollection, Integer teamSize, Integer responseTimeSeconds, OutgoingGameCommunicationAPI communicationAPI) {
         this.teamSize = teamSize;
         this.responseTimeSeconds = responseTimeSeconds;
@@ -44,6 +54,12 @@ public class PickTeamGamePhase implements GamePhase<PlayerTeam> {
         this.communicationAPI = communicationAPI;
     }
 
+    /**
+     * Announces phase changed and awaits for active player response
+     * @return team picked by active player
+     * @throws PhaseFailedException in case of player failing to pick team on time
+     * @throws InterruptedException
+     */
     @Override
     public PlayerTeam resolve() throws PhaseFailedException, InterruptedException {
         playerPickingTeam.getGameActionReceivedEvent().AttachHandler(responseHandler);

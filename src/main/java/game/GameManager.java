@@ -11,6 +11,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Aggregates information about every current active game
+ */
 @Component
 public class GameManager {
     private final GameBuilder gameBuilder;
@@ -45,6 +48,12 @@ public class GameManager {
         return gameMap;
     }
 
+    /**
+     * @param playerApiKey
+     * @param gameRoomUUID
+     * @return complete game information for given player and gameUUID
+     * @throws Exception
+     */
     public CompleteGameState loadCompleteGameState(UUID playerApiKey, UUID gameRoomUUID) throws Exception {
         if(!gameMap.containsKey(gameRoomUUID))
             throw new Exception("game not found");

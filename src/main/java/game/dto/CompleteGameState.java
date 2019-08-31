@@ -2,7 +2,8 @@ package game.dto;
 
 import game.AvalonRole;
 import game.VisiblePlayer;
-import game.dto.responses.ScoreBoard;
+import game.dto.notifications.GamePhaseInfo;
+import game.dto.notifications.ScoreBoard;
 
 import java.util.List;
 

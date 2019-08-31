@@ -1,4 +1,6 @@
-package game.dto;
+package game.dto.gameActions;
+
+import game.dto.GamePhaseType;
 
 import java.util.UUID;
 

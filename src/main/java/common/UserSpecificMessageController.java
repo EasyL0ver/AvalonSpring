@@ -4,7 +4,7 @@ import authentication.User;
 import authentication.UserService;
 import lobby.dto.UserSpecificMessage;
 
-public class UserSpecificMessageController {
+public abstract class UserSpecificMessageController {
 
     private final UserService userService;
 
@@ -12,6 +12,11 @@ public class UserSpecificMessageController {
         this.userService = userService;
     }
 
+    /**
+     * finds user according to message sent
+     * @param userSpecificMessage
+     * @return user
+     */
     protected User FindUser(UserSpecificMessage userSpecificMessage){
         return userService.findUser(userSpecificMessage.getUserApiKey());
     }

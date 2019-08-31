@@ -1,8 +1,11 @@
 package game;
 
+/**
+ * Represents availalable player roles
+ */
 public enum AvalonRole {
     RegularGood
     , RegularEvil
-    , Merin
-    , Assasin
+    , Merlin
+    , Assassin
 }

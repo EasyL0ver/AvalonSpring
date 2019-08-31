@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Builds complete game state given player and the game
+ */
 @Component
 public class GameStateBuilder {
 

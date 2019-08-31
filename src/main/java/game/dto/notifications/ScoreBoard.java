@@ -1,4 +1,4 @@
-package game.dto.responses;
+package game.dto.notifications;
 
 public class ScoreBoard {
     public Integer evilScore;

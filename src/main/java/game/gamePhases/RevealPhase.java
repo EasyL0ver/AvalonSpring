@@ -6,16 +6,23 @@ import game.GamePhase;
 import game.Player;
 import game.PlayerCollection;
 import game.communication.OutgoingGameCommunicationAPI;
-import game.dto.AssasinateGameAction;
-import game.dto.GameAction;
-import game.dto.GamePhaseInfo;
+import game.dto.gameActions.AssasinateGameAction;
+import game.dto.gameActions.GameAction;
+import game.dto.notifications.GamePhaseInfo;
 import game.dto.GamePhaseType;
 import game.exceptions.PhaseFailedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Game phase in which according to the score results evil players are revealed and given chance to
+ * assassinate Merlin player
+ */
 public class RevealPhase implements GamePhase<Boolean> {
+    /**
+     * Score outcome of the game, true is won by good false is won by evil
+     */
     private final Boolean outcome;
     private final PlayerCollection playerCollection;
     private final GamePhaseType gamePhaseType;
@@ -45,12 +52,18 @@ public class RevealPhase implements GamePhase<Boolean> {
         else
             gamePhaseType = GamePhaseType.EvilWonReveal;
 
-        evilPlayersIds = playerCollection.getPlayersWithRoles(AvalonRole.Assasin, AvalonRole.RegularEvil).stream().map(Player::getPlayerId).collect(Collectors.toList());
+        evilPlayersIds = playerCollection.getPlayersWithRoles(AvalonRole.Assassin, AvalonRole.RegularEvil).stream().map(Player::getPlayerId).collect(Collectors.toList());
     }
 
+    /**
+     * evil players are revealed and depending on an outcome evil players are given chance to assassinate merlin
+     * @return final result of the game
+     * @throws PhaseFailedException
+     * @throws InterruptedException
+     */
     @Override
     public Boolean resolve() throws PhaseFailedException, InterruptedException {
-        List<Player> assasins = playerCollection.getPlayersWithRoles(AvalonRole.Assasin);
+        List<Player> assasins = playerCollection.getPlayersWithRoles(AvalonRole.Assassin);
         if(outcome){
             for(Player assassin : assasins)
                 assassin.getGameActionReceivedEvent().AttachHandler(gameActionEventHandler);
@@ -76,7 +89,7 @@ public class RevealPhase implements GamePhase<Boolean> {
             for(Player assassin : assasins)
                 assassin.getGameActionReceivedEvent().DetachHandler(gameActionEventHandler);
 
-            boolean merlinHit = playerCollection.getPlayersWithRoles(AvalonRole.Merin).stream().filter(m -> m.getPlayerId() == assassinResponse.getKilledPlayerId()).count() >= 1;
+            boolean merlinHit = playerCollection.getPlayersWithRoles(AvalonRole.Merlin).stream().filter(m -> m.getPlayerId() == assassinResponse.getKilledPlayerId()).count() >= 1;
             communicationAPI.NotifyGameOver(playerCollection.getPlayerList().values(), !merlinHit);
             return merlinHit;
         }else{

@@ -1,10 +1,10 @@
 package game;
 
 import game.communication.OutgoingGameCommunicationAPI;
-import game.dto.GamePhaseInfo;
-import game.dto.MissionResult;
-import game.dto.TeamVoteResult;
-import game.dto.responses.ScoreBoard;
+import game.dto.notifications.GamePhaseInfo;
+import game.dto.notifications.MissionResult;
+import game.dto.notifications.TeamVoteResult;
+import game.dto.notifications.ScoreBoard;
 import game.exceptions.GameOverException;
 import game.exceptions.PhaseFailedException;
 import game.gameBuilder.GamePhaseFactory;
@@ -61,9 +61,9 @@ public class Game {
                 NotifyMissionResult(missionResult, outcome);
 
                 if(outcome)
-                    scoreTracker.IncerementGood();
+                    scoreTracker.incrementGood();
                 else
-                    scoreTracker.IncrementEvil();
+                    scoreTracker.incrementEvil();
 
                 round++;
                 playerCollection.activePlayerMoveNext();
@@ -87,7 +87,7 @@ public class Game {
                 proposedTeam = pickTeamGamePhase.resolve();
             }catch (PhaseFailedException e){
                 playerCollection.activePlayerMoveNext();
-                scoreTracker.ReportFailure();
+                scoreTracker.reportFailure();
             }
         }
 
@@ -108,7 +108,7 @@ public class Game {
             if(gameRulesProvider.getTeamVoteResultStrategy().resolveVoteResult(outcome.values()))
                 decidedTeam = proposedTeam;
             else{
-                scoreTracker.ReportFailure();
+                scoreTracker.reportFailure();
                 playerCollection.activePlayerMoveNext();
             }
         }

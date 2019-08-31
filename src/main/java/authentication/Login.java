@@ -7,17 +7,17 @@ public class Login {
     public Login() {
 
     }
-    //todo better exception
+
     public Login(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 
-    public String getUsername() {
+    String getUsername() {
         return username;
     }
 

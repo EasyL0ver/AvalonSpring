@@ -22,11 +22,21 @@ public class GameRulesProvider {
 
     private int[] evilPlayersTable = {1,1,1,1,2,2,3,3,3,4};
 
-
+    /**
+     *
+     * @param round
+     * @param playersInGame
+     * @return team size for given round and game size
+     */
     public Integer GetTeamSize(Integer round, Integer playersInGame){
         return teamSizeTable[round][playersInGame];
     }
 
+    /**
+     *
+     * @param playersInGame
+     * @return evil players currently in the game
+     */
     public Integer GetEvilPlayersCount(Integer playersInGame){
         return evilPlayersTable[playersInGame];
     }

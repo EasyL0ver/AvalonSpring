@@ -7,6 +7,9 @@ import lobby.gameroom.GameRoom;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * interface defining game lobby
+ */
 public interface GameLobby {
     Map<UUID, GameRoom> getLobbyGames();
 

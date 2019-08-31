@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Used to tidy up Game dependencies
+ */
 @Component
 public class GamePhaseFactory {
     private final GameRulesProvider gameRulesProvider;

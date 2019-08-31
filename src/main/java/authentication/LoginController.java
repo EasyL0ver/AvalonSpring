@@ -12,6 +12,9 @@ import javax.naming.Binding;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * controller to handle login requests
+ */
 @Controller
 public class LoginController {
 
@@ -24,12 +27,8 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     public String login(
-            HttpServletRequest loginRequest
-            , HttpServletResponse response
-            , @ModelAttribute("login") Login login
-            , BindingResult result
-            , Model model
-            , RedirectAttributes redirectAttributes) throws Exception {
+            @ModelAttribute("login") Login login
+            , Model model) {
 
         User user = null;
         try {

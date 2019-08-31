@@ -2,7 +2,7 @@ package game;
 
 import authentication.User;
 import common.Event;
-import game.dto.GameAction;
+import game.dto.gameActions.GameAction;
 
 import java.util.List;
 import java.util.UUID;

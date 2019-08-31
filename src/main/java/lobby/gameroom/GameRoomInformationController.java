@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * controller used for asynchronous notification events broadcasted to users concerning game room
+ */
 @RestController
 public class GameRoomInformationController {
     private final GameLobby gameLobby;

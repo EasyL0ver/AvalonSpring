@@ -6,16 +6,19 @@ import game.Player;
 import game.PlayerCollection;
 import game.PlayerTeam;
 import game.communication.OutgoingGameCommunicationAPI;
-import game.dto.GameAction;
-import game.dto.GamePhaseInfo;
+import game.dto.gameActions.GameAction;
+import game.dto.notifications.GamePhaseInfo;
 import game.dto.GamePhaseType;
-import game.dto.VoteGameAction;
+import game.dto.gameActions.VoteGameAction;
 import game.exceptions.PhaseFailedException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Generic phase used for any voting activity
+ */
 public class VotePhase implements GamePhase<Map<Integer, Boolean>> {
     private final Integer pollTimeMilliseconds = 500;
     private final Integer voteTimeSeconds;
@@ -50,6 +53,12 @@ public class VotePhase implements GamePhase<Map<Integer, Boolean>> {
         this.playerCollection = playerCollection;
     }
 
+    /**
+     * Waits unitil timeout and gathers boolean response from players
+     * @return map of players identifiers and boolean responses
+     * @throws PhaseFailedException
+     * @throws InterruptedException
+     */
     @Override
     public Map<Integer, Boolean> resolve() throws PhaseFailedException, InterruptedException {
 

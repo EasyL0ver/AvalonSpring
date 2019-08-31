@@ -1,4 +1,4 @@
-package game.dto;
+package game.dto.notifications;
 
 public class MissionResult {
     public Integer successes;

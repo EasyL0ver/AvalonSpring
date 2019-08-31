@@ -1,4 +1,6 @@
-package game.dto;
+package game.dto.notifications;
+
+import game.dto.GamePhaseType;
 
 import java.util.List;
 

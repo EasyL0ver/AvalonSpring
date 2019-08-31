@@ -15,6 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * controller broadcasting asynchronous event concerning game being added or removed from lobby
+ */
 @RestController
 public class LobbyInformationController{
     private SimpMessagingTemplate simpMessagingTemplate;

@@ -1,4 +1,4 @@
-package game.dto;
+package game.dto.gameActions;
 
 public class AssasinateGameAction extends GameAction {
     private int killedPlayerId;

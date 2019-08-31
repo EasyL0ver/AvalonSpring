@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Component used to building game object when creating the game
+ */
 @Component
 public class GameBuilder {
     private final GamePhaseFactory gamePhaseFactory;
@@ -24,6 +27,10 @@ public class GameBuilder {
         this.communicationAPI = communicationAPI;
     }
 
+    /**
+     * @param gameRoom game room object with data required to create new game
+     * @return new created game
+     */
     public Game Build(GameRoom gameRoom){
         List<User> usersInGame = gameRoom.getUsersInGame();
         GameRolesProvider gameRolesProvider = new GameRolesProvider(usersInGame.size(), gameRulesProvider.GetEvilPlayersCount(usersInGame.size()), gameRoom.getAdditionalRules());
@@ -54,8 +61,8 @@ public class GameBuilder {
     }
 
     private void AddIdentityInformation(PlayerCollection playerCollection){
-        List<Player> playersWhoKnowEvil = playerCollection.getPlayersWithRoles(AvalonRole.Merin, AvalonRole.RegularEvil, AvalonRole.Assasin);
-        List<Player> evilPlayers = playerCollection.getPlayersWithRoles(AvalonRole.Assasin, AvalonRole.RegularEvil);
+        List<Player> playersWhoKnowEvil = playerCollection.getPlayersWithRoles(AvalonRole.Merlin, AvalonRole.RegularEvil, AvalonRole.Assassin);
+        List<Player> evilPlayers = playerCollection.getPlayersWithRoles(AvalonRole.Assassin, AvalonRole.RegularEvil);
 
         List<VisiblePlayer> evilPlayerInfo = evilPlayers.stream().map(player -> new PlayerInfo(player.getPlayerName(), player.getPlayerId())).collect(Collectors.toList());
 

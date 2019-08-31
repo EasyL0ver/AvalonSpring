@@ -1,9 +1,12 @@
 package game;
 
 import game.communication.OutgoingGameCommunicationAPI;
-import game.dto.responses.ScoreBoard;
+import game.dto.notifications.ScoreBoard;
 import game.exceptions.GameOverException;
 
+/**
+ * keeps track of good and evil score, throws GameOverException when score exceeds threshold
+ */
 public class ScoreTracker {
     private final Integer failedAttemptsToLose;
     private final Integer pointsToWin;
@@ -21,7 +24,7 @@ public class ScoreTracker {
         this.communicationAPI = communicationAPI;
     }
 
-    public ScoreBoard getScoreBoard(){
+    ScoreBoard getScoreBoard(){
         ScoreBoard scoreBoard = new ScoreBoard();
         scoreBoard.evilScore = evilScore;
         scoreBoard.goodScore = goodScore;
@@ -30,7 +33,7 @@ public class ScoreTracker {
         return scoreBoard;
     }
 
-    public void IncrementEvil() throws GameOverException {
+    void incrementEvil() throws GameOverException {
         evilScore++;
 
         communicationAPI.NotifyScoreChanged(playerCollection.getPlayerList().values(),getScoreBoard());
@@ -39,7 +42,7 @@ public class ScoreTracker {
             throw new GameOverException(false, "evil otherPlayers got 3 points");
     }
 
-    public void IncerementGood() throws GameOverException {
+    void incrementGood() throws GameOverException {
         goodScore++;
 
         communicationAPI.NotifyScoreChanged(playerCollection.getPlayerList().values(),getScoreBoard());
@@ -48,7 +51,7 @@ public class ScoreTracker {
             throw new GameOverException(true, "good otherPlayers got 3 points");
     }
 
-    public void ReportFailure() throws GameOverException {
+    void reportFailure() throws GameOverException {
         failedAttempts++;
 
         communicationAPI.NotifyScoreChanged(playerCollection.getPlayerList().values(),getScoreBoard());

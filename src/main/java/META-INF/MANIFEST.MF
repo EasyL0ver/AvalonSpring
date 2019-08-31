@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Class-Path: stomp-websocket-2.3.3.jar javassist-3.23.2-GA.jar aspectjw
+ eaver-1.9.4.jar HikariCP-3.2.0.jar jackson-core-2.9.9.jar attoparser-
+ 2.0.5.RELEASE.jar spring-boot-starter-logging-2.1.6.RELEASE.jar sprin
+ g-expression-5.1.8.RELEASE.jar spring-websocket-5.1.8.RELEASE.jar spr
+ ing-web-5.1.8.RELEASE.jar spring-tx-5.1.8.RELEASE.jar spring-boot-sta
+ rter-json-2.1.6.RELEASE.jar tomcat-embed-websocket-9.0.21.jar tomcat-
+ embed-el-9.0.21.jar spring-beans-5.1.8.RELEASE.jar jackson-module-par
+ ameter-names-2.9.9.jar jackson-databind-2.9.9.jar commons-lang3-3.8.1
+ .jar logback-classic-1.2.3.jar jquery-3.1.0.jar junit-4.12.jar postgr
+ esql-42.2.5.jar spring-data-jpa-2.1.9.RELEASE.jar hamcrest-core-1.3.j
+ ar classmate-1.4.0.jar spring-core-5.1.8.RELEASE.jar spring-boot-star
+ ter-websocket-2.1.6.RELEASE.jar jackson-annotations-2.9.0.jar azure-s
+ pring-boot-starter-2.1.6.jar hibernate-commons-annotations-5.0.4.Fina
+ l.jar spring-jcl-5.1.8.RELEASE.jar jandex-2.0.5.Final.jar snakeyaml-1
+ .23.jar spring-data-commons-2.1.9.RELEASE.jar thymeleaf-3.0.11.RELEAS
+ E.jar byte-buddy-1.9.13.jar jackson-datatype-jdk8-2.9.9.jar spring-bo
+ ot-autoconfigure-2.1.6.RELEASE.jar javax.transaction-api-1.3.jar log4
+ j-api-2.11.2.jar tomcat-embed-core-9.0.21.jar spring-boot-starter-jdb
+ c-2.1.6.RELEASE.jar log4j-to-slf4j-2.11.2.jar spring-boot-starter-aop
+ -2.1.6.RELEASE.jar spring-boot-starter-thymeleaf-2.1.6.RELEASE.jar ja
+ ckson-datatype-jsr310-2.9.9.jar jaxb-api-2.3.1.jar spring-context-5.1
+ .8.RELEASE.jar thymeleaf-spring5-3.0.11.RELEASE.jar spring-boot-start
+ er-validation-2.1.6.RELEASE.jar hibernate-core-5.3.10.Final.jar commo
+ ns-compress-1.9.jar javax.annotation-api-1.3.2.jar unbescape-1.1.6.RE
+ LEASE.jar sockjs-client-1.0.2.jar thymeleaf-extras-java8time-3.0.4.RE
+ LEASE.jar spring-boot-starter-data-jpa-2.1.6.RELEASE.jar jul-to-slf4j
+ -1.7.26.jar bootstrap-3.3.7.jar spring-boot-starter-2.1.6.RELEASE.jar
+  azure-spring-boot-2.1.6.jar spring-jdbc-5.1.8.RELEASE.jar antlr-2.7.
+ 7.jar spring-boot-starter-web-2.1.6.RELEASE.jar spring-boot-2.1.6.REL
+ EASE.jar dom4j-2.1.1.jar hibernate-validator-6.0.17.Final.jar spring-
+ aop-5.1.8.RELEASE.jar jboss-logging-3.3.2.Final.jar spring-webmvc-5.1
+ .8.RELEASE.jar slf4j-api-1.7.26.jar validation-api-2.0.1.Final.jar sp
+ ring-messaging-5.1.8.RELEASE.jar logback-core-1.2.3.jar spring-boot-s
+ tarter-tomcat-2.1.6.RELEASE.jar spring-aspects-5.1.8.RELEASE.jar webj
+ ars-locator-core-0.35.jar javax.persistence-api-2.2.jar spring-orm-5.
+ 1.8.RELEASE.jar javax.activation-api-1.2.0.jar
+Main-Class: Application.Application
+

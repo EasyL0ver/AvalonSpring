@@ -1,19 +1,22 @@
 package game.communication;
 
 import game.Player;
-import game.dto.GamePhaseInfo;
-import game.dto.MissionResult;
-import game.dto.TeamVoteResult;
-import game.dto.responses.ScoreBoard;
+import game.dto.notifications.GamePhaseInfo;
+import game.dto.notifications.MissionResult;
+import game.dto.notifications.TeamVoteResult;
+import game.dto.notifications.ScoreBoard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
+
+/**
+ * Controller used for broadcasting asynchronous event to players
+ */
 @RestController
 public class OutgoingGameCommunicationAPI {
-
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
@@ -21,6 +24,11 @@ public class OutgoingGameCommunicationAPI {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
+    /**
+     * Broadcast information about game phase changed
+     * @param players collection of players to broadcast to
+     * @param info info to broadcast
+     */
     public void AnnouncePhaseChanged(Collection<Player> players, GamePhaseInfo info){
         for(Player player : players)
             simpMessagingTemplate.convertAndSend("/topic/game/user-specific/" + player.getUserUUID() + "/phase-changed", info);

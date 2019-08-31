@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * controller used handling asynchronous requests concerning lobby view
+ */
 @Controller
 public class LobbyController extends UserSpecificMessageController {
 
@@ -41,8 +44,7 @@ public class LobbyController extends UserSpecificMessageController {
 
     @PostMapping("/lobby/join-game")
     public String joinGame(
-            @ModelAttribute("join_game_params") JoinGameLobbyMessage message
-            , Model model) {
+            @ModelAttribute("join_game_params") JoinGameLobbyMessage message) {
 
         User user = FindRegisteredUserOrThrow(message);
 
@@ -55,8 +57,7 @@ public class LobbyController extends UserSpecificMessageController {
 
     @PostMapping("/lobby/create-game")
     public String createGame(
-            @ModelAttribute("create_game_params") CreateGameLobbyMessage message
-            , Model model) {
+            @ModelAttribute("create_game_params") CreateGameLobbyMessage message) {
 
         User user = FindRegisteredUserOrThrow(message);
 

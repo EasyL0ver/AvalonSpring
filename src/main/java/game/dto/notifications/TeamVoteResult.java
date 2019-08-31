@@ -1,4 +1,4 @@
-package game.dto;
+package game.dto.notifications;
 
 import javax.swing.text.StyledEditorKit;
 import java.util.Map;

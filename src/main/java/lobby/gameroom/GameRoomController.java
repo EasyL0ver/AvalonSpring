@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * controller for synchronous actions in game room view
+ */
 @Controller
 public class GameRoomController extends UserSpecificMessageController {
 

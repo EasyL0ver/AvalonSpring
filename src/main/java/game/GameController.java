@@ -21,6 +21,14 @@ public class GameController {
         this.gameManager = gameManager;
     }
 
+    /**
+     * Open game view
+     * @param apiKey user api key
+     * @param gameUUID requested game UUID
+     * @param model
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/game")
     public String goToGame(
             @ModelAttribute("apiKey") UUID apiKey

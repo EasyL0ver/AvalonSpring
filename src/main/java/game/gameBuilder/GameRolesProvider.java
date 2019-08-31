@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GameRolesProvider {
+class GameRolesProvider {
 
     private Integer evilSlotsLeft;
     private Integer playerSlotsLeft;
@@ -15,7 +15,7 @@ public class GameRolesProvider {
     private final AdditionalRules additionalRules;
     private final List<AvalonRole> outputList;
 
-    public GameRolesProvider(Integer playerCount, Integer evilPlayers, AdditionalRules additionalRules){
+    GameRolesProvider(Integer playerCount, Integer evilPlayers, AdditionalRules additionalRules){
         this.playerSlotsLeft = playerCount;
         this.evilSlotsLeft = evilPlayers;
 
@@ -23,6 +23,9 @@ public class GameRolesProvider {
         this.additionalRules = additionalRules;
     }
 
+    /**
+     * @return list of role card to be used in game in random order
+     */
     List<AvalonRole> GetShuffledRoles(){
 
         AddMerlin();
@@ -37,13 +40,13 @@ public class GameRolesProvider {
 
     private void AddMerlin(){
         playerSlotsLeft--;
-        outputList.add(AvalonRole.Merin);
+        outputList.add(AvalonRole.Merlin);
     }
 
     private void AddAssassin(){
         playerSlotsLeft--;
         evilSlotsLeft--;
-        outputList.add(AvalonRole.Assasin);
+        outputList.add(AvalonRole.Assassin);
     }
 
     private void FillWithRegularEvil(){
