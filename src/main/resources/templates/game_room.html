@@ -15,9 +15,9 @@
     <div class="center">
         <div class="row game-title">
             <h1 id="game-name">
-                <p th:text="'Drużyna: ' + ${host_name}" />
+                <p th:text="${room_name}" />
             </h1>
-            <p th:text="'Nazwa gry: ' + ${room_name}" />
+            <p th:text="'Hostowane przez: ' + ${host_name}" />
         </div>
         <div class="row start-game">
             <form action="room/start-game" method="post">

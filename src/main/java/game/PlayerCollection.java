@@ -25,7 +25,7 @@ public class PlayerCollection {
     }
 
     public void activePlayerMoveNext(){
-        Integer nextActive = activePlayerIndex++;
+        Integer nextActive = activePlayerIndex + 1;
 
         if(nextActive >= playerList.size())
             nextActive = 0;
@@ -38,7 +38,11 @@ public class PlayerCollection {
     }
 
     public Player getActivePlayer(){
-        return playerList.values().stream().filter(x -> x.getPlayerId().equals(activePlayerIndex)).collect(Collectors.toList()).get(0);
+        List<Player> filteredPlayers = playerList.values().stream().filter(x -> x.getPlayerId().equals(activePlayerIndex)).collect(Collectors.toList());
+        Player activePlayer = filteredPlayers.get(0);
+
+
+        return activePlayer;
     }
 
     public List<Player> getNonActivePlayers(){

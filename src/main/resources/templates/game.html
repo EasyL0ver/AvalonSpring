@@ -7,7 +7,11 @@
     <link href="/style.css" rel="stylesheet">
     <script src="/game.js"></script>
     <script src="/game_players.js"></script>
-
+    <script src="/game_popup.js"></script>
+    <script src="/game_score.js"></script>
+    <script src="/game_action_bar.js"></script>
+    <script src="/game_tooltips.js"></script>
+    <script src="/game_timer.js"></script>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -19,10 +23,10 @@
             Gra się rozpoczyna...
         </div>
         <div id="voting">
-            Nieudane głosowania: <span class="voting-unpassed"></span>/<span class="voting-total">10</span>
+            Nieudane głosowania: <span class="voting-unpassed"></span>/<span class="voting-total">5</span>
         </div>
         <div id="timer">
-            <span>00:12</span>
+            <span> </span>
         </div>
     </div>
 
@@ -36,160 +40,52 @@
             </div>
         </div>
         <div class="col-8">
-            <span class="won-for-good">Zwycięstwa dobrych: <span>5</span></span>
-            <span class="won-for-bad">Zwycięstwa złych: <span>1</span></span>
+            <span class="won-for-good">Zwycięstwa dobrych: <span id="good-score-counter">5</span></span>
+            <span class="won-for-bad">Zwycięstwa złych: <span id="evil-score-counter">1</span></span>
         </div>
     </div>
 
     <div id="playersList" class="row">
         <div class="horizontal-scrollable">
-            <div class="player" data-nickname="nickPawel">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
-            <div class="player" data-nickname="">
-                <div class="nickname">
-                    Paweł
-                </div>
-                <div class="isGood">
-                    Dobry
-                </div>
-            </div>
+
 
         </div>
     </div>
     <div id="decisions" class="row">
-        <div class="cards-pair">
-            <img src="/zgoda.png" id="zgoda" />
-            <img src="/sprzeciw.png" id="sprzeciw" />
-        </div>
-        <div class="cards-pair">
-            <img src="/sukces.png" id="sukces" />
-            <img src="/porazka.png" id="porazka" />
-        </div>
-        <div class="cards-pair">
-            <button id="akcept">Akcept</button>
-        </div>
+
     </div>
 </div>
 
 <script th:inline="javascript">
     jQuery(document).ready(function($) {
-        $('.player.active').removeClass('active');
-        $('.player.active .nickname').html();
-        $('.player').data('nickname');
+        console.log($("#zgoda"))
+
         $('.player').click(function(e){
 
             if($(this).hasClass('active')){
-                $(this).removeClass('active');
+                if(pickablePlayers !== 0)
+                    $(this).removeClass('active');
             }
             else{
-                if($('.player.active').length >= 3){
+                if($('.player.active').length >= pickablePlayers){
                     return;
                 }
                 $(this).addClass("active");
             }
         });
 
-        $('.mission-number').click(function(e){
-            var phases = {
-                0: 'phase-0',
-                1: 'phase-1',
-                2: 'phase-2',
-                3: 'phase-3'
-            }
-            var b = jQuery('body');
-
-            for(var i=0; i<4; i++){
-                console.log('asd');
-                if(b.hasClass(phases[i.toString()])){
-                    b.removeClass(phases[i.toString()]);
-                    if(i===3){
-                        b.addClass(phases[0]);
-                    }
-                    else{
-                        b.addClass(phases[i.toString()]);
-                    }
-                    return;
-                }
-            }
-        });
     });
-
     apiKey = /*[[${api_key}]]*/ 'default';
     gameUUID = /*[[${room_uuid}]]*/ 'default';
     viewModel = /*[[${state}]]*/ 'default';
 
     console.log(viewModel);
+    updateScoreBoard();
+    updateTooltip();
+    updateTeamSizeCounter();
+    updateActionBar();
     updatePlayerView();
+    playersChangePhase();
     stomp_connect();
 </script>
 </body>

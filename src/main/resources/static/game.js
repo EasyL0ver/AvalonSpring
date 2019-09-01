@@ -27,85 +27,40 @@ function stomp_connect() {
             viewModel.gamePhaseInfo = JSON.parse(addedInfo.body);
             console.log(viewModel);
 
-            //todo for testing
+            var phaseName = viewModel.gamePhaseInfo.gagamePhaseType;
 
-            if(viewModel.gamePhaseInfo.gamePhaseType == "PickTeam")
-            {
-                var testAnswer = [0];
-                nominateTeam(testAnswer);
-            }
-            if(viewModel.gamePhaseInfo.gamePhaseType == "VoteTeam")
-            {
-                voteTeam(true,2);
+            if(phaseName === "EvilWonReveal" || phaseName === "GoodWonAssassination"){
+                //evil player reveal
+                updatePlayerView();
             }
 
-            if(viewModel.gamePhaseInfo.gamePhaseType == "Mission")
-            {
-                voteTeam(true,3);
-            }
-
-            if(viewModel.gamePhaseInfo.gamePhaseType == "GoodWonAssassination")
-            {
-                assasinate(0);
-            }
-
+            setSecondsLeft(viewModel.gamePhaseInfo.timeoutSeconds)
+            updateTeamSizeCounter();
+            playersChangePhase();
+            updateActionBar();
+            updateTooltip();
         });
 
         stompClient.subscribe(scoreChangedEventUrl, function (addedInfo) {
             viewModel.scoreBoard = JSON.parse(addedInfo.body);
             console.log(viewModel);
+            updateScoreBoard();
         });
 
         stompClient.subscribe(gameEndedEventUrl, function (addedInfo) {
-            viewModel.scoreBoard = JSON.parse(addedInfo.body);
             console.log(viewModel);
+            popupGameOver(JSON.parse(addedInfo.body));
+            var redirectBackToLobbyURL = window.location.origin + '/lobby?apiKey=' + apiKey;
+            window.location.replace(redirectBackToLobbyURL);
         });
 
         stompClient.subscribe(voteResultEventUrl, function (addedInfo) {
-            viewModel.scoreBoard = JSON.parse(addedInfo.body);
             console.log(viewModel);
+            popupVoteResult(JSON.parse(addedInfo.body));
         });
 
         stompClient.subscribe(missionResultEventUrl, function (addedInfo) {
-            viewModel.scoreBoard = JSON.parse(addedInfo.body);
             console.log(viewModel);
+            popupMissionResult(JSON.parse(addedInfo.body));
         })
     })}
-
-function nominateTeam(nominatedPlayersIds){
-    var payload = {'nominatedPlayers': nominatedPlayersIds
-        , 'playerId' : viewModel.myId
-        , 'userApiKey' : apiKey
-        , 'gameUUID' : gameUUID
-        , 'currentGamePhase' : 1};
-
-    console.log(payload);
-
-    stompClient.send("/app/game/action/nominate", {}, JSON.stringify(payload));
-}
-
-function voteTeam(result, phase){
-    var payload = {'vote': result
-        , 'playerId' : viewModel.myId
-        , 'userApiKey' : apiKey
-        , 'gameUUID' : gameUUID
-        , 'currentGamePhase' : phase};
-
-    console.log(payload);
-
-    stompClient.send("/app/game/action/vote", {}, JSON.stringify(payload));
-}
-
-
-function assasinate(playerId){
-    var payload = {'killedPlayerId;': playerId
-        , 'playerId' : viewModel.myId
-        , 'userApiKey' : apiKey
-        , 'gameUUID' : gameUUID
-        , 'currentGamePhase' : 5};
-
-    console.log(payload);
-
-    stompClient.send("/app/game/action/assassinate", {}, JSON.stringify(payload));
-}
-

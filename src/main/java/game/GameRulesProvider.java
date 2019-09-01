@@ -29,7 +29,7 @@ public class GameRulesProvider {
      * @return team size for given round and game size
      */
     public Integer GetTeamSize(Integer round, Integer playersInGame){
-        return teamSizeTable[round][playersInGame];
+        return teamSizeTable[playersInGame - 1][round];
     }
 
     /**

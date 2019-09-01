@@ -3,6 +3,7 @@
 body{
     width: 100vw;
     height: 100vh;
+    background: url(tlo.jpg) no-repeat;
 }
 body > .container {
     position: relative;
@@ -14,7 +15,7 @@ body > .container {
     padding: 15px;
     box-sizing: border-box;
 
-    background: url(background.jpg);
+    background: url(shuttle.png);
 }
 body > .container .row {
     display: block;
@@ -196,6 +197,7 @@ ul.players-list li:nth-child(even) {
     box-sizing: border-box;
     cursor: pointer;
 }
+
 .player.active {
     border: 2px solid black;
     box-shadow: 0 0 20px 5px white;
@@ -312,6 +314,8 @@ div#decisions button {
     width: 100%;
     margin-bottom: 15px;
     padding: 10px;
+    cursor: pointer;
+    display: block;
 }
 #decisions .cards-pair{
     position: absolute;
@@ -324,36 +328,11 @@ div#decisions button {
     position: relative;
     width: 45%;
     display: inline-block;
+    margin: 15px auto;
     transition: .5s all ease;
-}
-
-img#sukces,
-img#zgoda{
-    transform: translateX(-150%);
-}
-img#porazka,
-img#sprzeciw{
-    transform: translateX(150%);
-}
-
-#akcept{
-    display: none;
-}
+    cursor: hand;
 
 
-/**
-* WyÅ›wietl karty zgody/sprzeciwu
-*/
-body.phase-3 #akcept{
-    display: block;
+
 }
-body.phase-1 img#sukces,
-body.phase-1 img#porazka {
-    transform: translateX(0px);
-    display: inline-block;
-}
-body.phase-2 img#zgoda,
-body.phase-2 img#sprzeciw {
-    transform: translateX(0px);
-    display: inline-block;
-}
+

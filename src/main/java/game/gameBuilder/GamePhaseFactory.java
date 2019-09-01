@@ -29,11 +29,11 @@ public class GamePhaseFactory {
 
     public GamePhase<Map<Integer, Boolean>> BuildVotePhase(PlayerCollection playerCollection, PlayerTeam playerTeam){
         List<Player> allPlayers = playerTeam.getPlayers();
-        return new VotePhase(120, allPlayers, GamePhaseType.VoteTeam, outgoingGameCommunicationAPI, playerTeam, playerCollection);
+        return new VotePhase(300, allPlayers, GamePhaseType.VoteTeam, outgoingGameCommunicationAPI, playerTeam, playerCollection);
     }
 
     public GamePhase<Map<Integer, Boolean>> BuildMissionPhase(PlayerCollection playerCollection, PlayerTeam playerTeam){
-        return new VotePhase(120, playerTeam.getPlayers(), GamePhaseType.Mission, outgoingGameCommunicationAPI, playerTeam, playerCollection);
+        return new VotePhase(300, playerTeam.getPlayers(), GamePhaseType.Mission, outgoingGameCommunicationAPI, playerTeam, playerCollection);
     }
 
     public GamePhase<PlayerTeam> BuildPickingPhase(PlayerCollection playerCollection, Integer round){
